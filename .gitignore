@@ -1,0 +1,14 @@
+# OS X temporary files that should never be committed
+.DS_Store
+*.swp
+*.tagname.txt
+*.tagdesc.txt
+*.log
+*~.nib
+*.pid
+
+# Ignore Xcode build file directories
+DerivedData/
+build/
+
+

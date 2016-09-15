@@ -1,0 +1,18 @@
+#
+#  board_states.txt
+#  Zlink
+#
+#  Created by Kennan Mell on 5/2/16.
+#  Copyright © 2016 MegaWatt Gaming. All rights reserved.
+#
+
+# A list of initial board states to load at the start of a game.
+# Intended for a 6x6 board.
+# Used by the BoardFiller algorithm.
+#
+# Format: [zlink locations] / [1 locations] / [2 locations] / [3 locations]
+#
+# All lines should have 3 Zlinks and 3-4 numbers.
+
+1 10 25 / 4 6 / 12 / 30
+2 11 26 / 1 / 10 / 25
