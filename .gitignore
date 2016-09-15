@@ -11,4 +11,6 @@
 DerivedData/
 build/
 
+# Don't store personal settings
+**/xcuserdata/**/*
 
