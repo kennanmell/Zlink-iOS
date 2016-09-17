@@ -21,15 +21,15 @@ class GameoverController: UIViewController {
     static let ID = "Gameover"
     
     /** The `Board` instance to display. Should store the state of the last game the user played when they lost. */
-    private let board = SavedData.board
+    fileprivate let board = SavedData.board
     
     /** `self.view` cast to `GameoverView`. */
-    private var gameoverView: GameoverView {
+    fileprivate var gameoverView: GameoverView {
         // This cast will always succeed if the Storyboard is set up correctly.
         return self.view as! GameoverView
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
@@ -41,14 +41,14 @@ class GameoverController: UIViewController {
         
         // Set up the `BoardView` to display the state of the board when the user lost.
         for i in 0..<board.totalTiles {
-            gameoverView.boardView.tileButtonArray[i].setImage(ImageManager.imageForTile(board[i]), forState: .Normal)
+            gameoverView.boardView.tileButtonArray[i].setImage(ImageManager.image(forTile: board[i]), for: UIControlState())
         }
         
         // Show correct score.
         gameoverView.scoreLabel.text = String(board.score)
         
         // Show high score sticker if necessary.
-        gameoverView.highScoreStickerImage.hidden = SavedData.stats.count < 2 || !(board.score == SavedData.stats[0].score && board.score > SavedData.stats[1].score)
+        gameoverView.highScoreStickerImage.isHidden = SavedData.stats.count < 2 || !(board.score == SavedData.stats[0].score && board.score > SavedData.stats[1].score)
         
         // Prepare gesture recognizers.
         gameoverView.shareButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(GameoverController.shareTapped)))
@@ -60,8 +60,8 @@ class GameoverController: UIViewController {
     
     /** Called when the user taps the new game button. */
     func newGameTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
-        mainController.setViewController(PlayController.ID)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
+        mainController.setViewController(id: PlayController.ID)
     }
     
     
@@ -69,13 +69,13 @@ class GameoverController: UIViewController {
     
     /** Called when the user taps the share button. */
     func shareTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         
         // Get screenshot to share.
-        let layer = UIApplication.sharedApplication().keyWindow!.layer
-        let scale = UIScreen.mainScreen().scale
+        let layer = UIApplication.shared.keyWindow!.layer
+        let scale = UIScreen.main.scale
         UIGraphicsBeginImageContextWithOptions(layer.frame.size, false, scale);
-        layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        layer.render(in: UIGraphicsGetCurrentContext()!)
         let screenshot = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
@@ -83,20 +83,20 @@ class GameoverController: UIViewController {
         // Set up and open Apple's default sharing feature.
         let text = "Check out my latest score in Zlink!"
         
-        var objectsToShare: Array<NSObject> = [text]
+        var objectsToShare: Array<NSObject> = [text as NSObject]
         
-        if let website = NSURL(string: "http://www.megawattgaming.com/") {
-            objectsToShare.append(website)
+        if let website = URL(string: "http://www.megawattgaming.com/") {
+            objectsToShare.append(website as NSObject)
         }
         
         if screenshot != nil {
-            objectsToShare.append(screenshot)
+            objectsToShare.append(screenshot!)
         }
         
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
         
         let popoverView = UIView()
-        if activityVC.respondsToSelector(Selector("popoverPresentationController")) {
+        if activityVC.responds(to: #selector(getter: UIViewController.popoverPresentationController)) {
             // iPad
             let shareButton = gameoverView.shareButton
             popoverView.frame = CGRect(x: shareButton.frame.origin.x - self.view.frame.width * 0.01, y: shareButton.frame.origin.y + shareButton.frame.height / 2, width: 1, height: 1)
@@ -104,7 +104,7 @@ class GameoverController: UIViewController {
             activityVC.popoverPresentationController?.sourceView = popoverView
         }
 
-        self.navigationController!.presentViewController(activityVC, animated: true, completion: {
+        self.navigationController!.present(activityVC, animated: true, completion: {
             popoverView.removeFromSuperview()
         })
     }

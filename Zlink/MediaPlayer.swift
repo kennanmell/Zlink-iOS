@@ -39,11 +39,11 @@ struct MediaPlayer {
                 if backgroundMusic.numberOfLoops != -1 {
                     backgroundMusic.numberOfLoops = -1
                 }
-                if !backgroundMusic.playing {
+                if !backgroundMusic.isPlaying {
                     backgroundMusic.play()
                 }
             } else {
-                if backgroundMusic.playing {
+                if backgroundMusic.isPlaying {
                     backgroundMusic.pause()
                 }
             }
@@ -51,14 +51,14 @@ struct MediaPlayer {
     }
     
     /** The `AVAudioPlayer` used to play background music. */
-    private static var backgroundMusic = Sound.setupAudioPlayerWithFile("background_music", type: "mp3")
+    fileprivate static var backgroundMusic = Sound.setupAudioPlayer(withFile: "background_music", type: "mp3")
     // `Sound`s used to play the sounds specified by the static properties above.
-    private static var badMoveSound = Sound(soundName: MediaPlayer.badMoveSoundLocation)
-    private static var linkMadeSound = Sound(soundName: MediaPlayer.linkMadeSoundLocation)
-    private static var gameoverSound = Sound(soundName: MediaPlayer.gameoverSoundLocation)
-    private static var moveSound = Sound(soundName: MediaPlayer.moveSoundLocation)
-    private static var selectSound = Sound(soundName: MediaPlayer.selectSoundLocation)
-    private static var buttonPressSound = Sound(soundName: MediaPlayer.buttonPressSoundLocation)
+    fileprivate static var badMoveSound = Sound(soundName: MediaPlayer.badMoveSoundLocation)
+    fileprivate static var linkMadeSound = Sound(soundName: MediaPlayer.linkMadeSoundLocation)
+    fileprivate static var gameoverSound = Sound(soundName: MediaPlayer.gameoverSoundLocation)
+    fileprivate static var moveSound = Sound(soundName: MediaPlayer.moveSoundLocation)
+    fileprivate static var selectSound = Sound(soundName: MediaPlayer.selectSoundLocation)
+    fileprivate static var buttonPressSound = Sound(soundName: MediaPlayer.buttonPressSoundLocation)
     
     
     // MARK: Functions
@@ -84,7 +84,7 @@ struct MediaPlayer {
             case selectSoundLocation: sound = selectSound.requestSound()
             case buttonPressSoundLocation: sound = buttonPressSound.requestSound()
             default:
-                sound = Sound.setupAudioPlayerWithFile(soundLocation, type: "mp3")
+                sound = Sound.setupAudioPlayer(withFile: soundLocation as NSString, type: "mp3")
                 print("MediaPlayer: Playing non-native sound")
             }
             
@@ -100,13 +100,13 @@ private struct Sound {
     // MARK: Properties
     
     /** One copy of the sound to be played. */
-    private var storedSound1: AVAudioPlayer
+    fileprivate var storedSound1: AVAudioPlayer
     
     /** A second copy of the sound to be played. */
-    private var storedSound2: AVAudioPlayer
+    fileprivate var storedSound2: AVAudioPlayer
     
     /** Determines which of the two stored sounds to play next. */
-    private var firstLast: Bool
+    fileprivate var firstLast: Bool
     
     /** The file name of the sound to be played by `self`. */
     let soundName: String
@@ -123,8 +123,8 @@ private struct Sound {
     init(soundName: String) {
         self.soundName = soundName
         self.firstLast = false
-        self.storedSound2 = Sound.setupAudioPlayerWithFile(soundName, type:"mp3")
-        self.storedSound1 = Sound.setupAudioPlayerWithFile(soundName, type:"mp3")
+        self.storedSound2 = Sound.setupAudioPlayer(withFile: soundName as NSString, type:"mp3")
+        self.storedSound1 = Sound.setupAudioPlayer(withFile: soundName as NSString, type:"mp3")
     }
     
     
@@ -138,10 +138,10 @@ private struct Sound {
     mutating func requestSound() -> AVAudioPlayer {
         firstLast = !firstLast
         if firstLast {
-            storedSound2 = Sound.setupAudioPlayerWithFile(soundName, type:"mp3")
+            storedSound2 = Sound.setupAudioPlayer(withFile: soundName as NSString, type:"mp3")
             return storedSound1
         } else {
-            storedSound1 = Sound.setupAudioPlayerWithFile(soundName, type:"mp3")
+            storedSound1 = Sound.setupAudioPlayer(withFile: soundName as NSString, type:"mp3")
             return storedSound2
         }
     }
@@ -154,14 +154,14 @@ private struct Sound {
      - returns: The AVAudioPlayer.
      - requires: The passed parameters point to a valid file path.
      */
-    static func setupAudioPlayerWithFile(file:NSString, type:NSString) -> AVAudioPlayer  {
-        let path = NSBundle.mainBundle().pathForResource(file as String, ofType: type as String)
-        let url = NSURL.fileURLWithPath(path!)
+    static func setupAudioPlayer(withFile file:NSString, type:NSString) -> AVAudioPlayer  {
+        let path = Bundle.main.path(forResource: file as String, ofType: type as String)
+        let url = URL(fileURLWithPath: path!)
         
         var audioPlayer: AVAudioPlayer
         
         do {
-            try audioPlayer = AVAudioPlayer(contentsOfURL: url)
+            try audioPlayer = AVAudioPlayer(contentsOf: url)
         } catch {
             fatalError("No media file exists at the specified path.")
         }

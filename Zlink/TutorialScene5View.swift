@@ -37,12 +37,12 @@ class TutorialScene5View: UIView {
     }
     
     /** Shared initializer. */
-    private func initialize() {
+    fileprivate func initialize() {
         backgroundColor = ImageManager.appBackgroundColor
         
-        textLabel.lineBreakMode = .ByWordWrapping
+        textLabel.lineBreakMode = .byWordWrapping
         textLabel.numberOfLines = 0
-        textLabel.textAlignment = .Center
+        textLabel.textAlignment = .center
         textLabel.text = "How many Zlinks can you link?"
         
         addSubview(textLabel)

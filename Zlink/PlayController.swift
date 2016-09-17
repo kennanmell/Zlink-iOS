@@ -22,19 +22,19 @@ class PlayController: UIViewController {
     static let ID = "Play"
     
     /** The `Board` instance representing the game the user is playing. */
-    private let board = SavedData.board
+    fileprivate let board = SavedData.board
     
     /** A `BoardFiller` instance tied to the game the user is playing (should refill `board`). */
-    private let boardFiller = SavedData.boardFiller
+    fileprivate let boardFiller = SavedData.boardFiller
     
     /** The intended tiles per row of the board the user plays on. */
     static let boardLength = 6
     
     /** A helper/sub- controller that animates changes to the board. */
-    private var boardController: BoardController!
+    fileprivate var boardController: BoardController!
     
     /** A helper/sub-controller that performs actions after `boardController` is finished with a batch of animations. */
-    private var allAnimationsCompleteListener: PlayAllAnimationsCompleteListener!
+    fileprivate var allAnimationsCompleteListener: PlayAllAnimationsCompleteListener!
     
     /** `true` if and only if the power-ups slider is open (visible). */
     var powerupsOpen = false {
@@ -49,49 +49,49 @@ class PlayController: UIViewController {
                 
                 let tileRepairButton = powerUpsView.boardRepairButton
                 if SavedData.boardRepairUsedInCurrentGame {
-                    tileRepairButton.setImage(ImageManager.imageForName("powerup_tile_repair_disabled"), forState: .Normal)
-                    tileRepairButton.setImage(ImageManager.imageForName("powerup_tile_repair_disabled"), forState: .Highlighted)
+                    tileRepairButton.setImage(ImageManager.image(forName: "powerup_tile_repair_disabled"), for: UIControlState())
+                    tileRepairButton.setImage(ImageManager.image(forName: "powerup_tile_repair_disabled"), for: .highlighted)
                 } else {
-                    tileRepairButton.setImage(ImageManager.imageForName("powerup_tile_repair"), forState: .Normal)
-                    tileRepairButton.setImage(ImageManager.imageForName("powerup_tile_repair_highlighted"), forState: .Highlighted)
+                    tileRepairButton.setImage(ImageManager.image(forName: "powerup_tile_repair"), for: UIControlState())
+                    tileRepairButton.setImage(ImageManager.image(forName: "powerup_tile_repair_highlighted"), for: .highlighted)
                 }
                 
                 let magicTileButton = powerUpsView.magicWandButton
                 if SavedData.magicWandUsedInCurrentGame {
-                    magicTileButton.setImage(ImageManager.imageForName("powerup_magic_tile_disabled"), forState: .Normal)
-                    magicTileButton.setImage(ImageManager.imageForName("powerup_magic_tile_disabled"), forState: .Highlighted)
+                    magicTileButton.setImage(ImageManager.image(forName: "powerup_magic_tile_disabled"), for: UIControlState())
+                    magicTileButton.setImage(ImageManager.image(forName: "powerup_magic_tile_disabled"), for: .highlighted)
                 } else {
-                    magicTileButton.setImage(ImageManager.imageForName("powerup_magic_tile"), forState: .Normal)
-                    magicTileButton.setImage(ImageManager.imageForName("powerup_magic_tile_highlighted"), forState: .Highlighted)
+                    magicTileButton.setImage(ImageManager.image(forName: "powerup_magic_tile"), for: UIControlState())
+                    magicTileButton.setImage(ImageManager.image(forName: "powerup_magic_tile_highlighted"), for: .highlighted)
                 }
                 
                 let shuffleButton = powerUpsView.shuffleButton
                 if SavedData.shuffleUsedInCurrentGame {
-                    shuffleButton.setImage(ImageManager.imageForName("powerup_shuffle_disabled"), forState: .Normal)
-                    shuffleButton.setImage(ImageManager.imageForName("powerup_shuffle_disabled"), forState: .Highlighted)
+                    shuffleButton.setImage(ImageManager.image(forName: "powerup_shuffle_disabled"), for: UIControlState())
+                    shuffleButton.setImage(ImageManager.image(forName: "powerup_shuffle_disabled"), for: .highlighted)
                 } else {
-                    shuffleButton.setImage(ImageManager.imageForName("powerup_shuffle"), forState: .Normal)
-                    shuffleButton.setImage(ImageManager.imageForName("powerup_shuffle_highlighted"), forState: .Highlighted)
+                    shuffleButton.setImage(ImageManager.image(forName: "powerup_shuffle"), for: UIControlState())
+                    shuffleButton.setImage(ImageManager.image(forName: "powerup_shuffle_highlighted"), for: .highlighted)
                 }
                 
                 // Make sure inventory label is up to date.
                 powerUpsView.inventoryLabel.text = "Power-Ups: " + String(SavedData.powerupsOwned)
                 
-                powerUpsButton.setImage(ImageManager.imageForName("play_powerup_down"), forState: .Normal)
-                powerUpsButton.setImage(ImageManager.imageForName("play_powerup_down_highlighted"), forState: .Highlighted)
+                powerUpsButton.setImage(ImageManager.image(forName: "play_powerup_down"), for: UIControlState())
+                powerUpsButton.setImage(ImageManager.image(forName: "play_powerup_down_highlighted"), for: .highlighted)
                 
                 // The amount of the total height of the powerups view that gets shown when it slides open.
                 let amountShown = powerUpsView.frame.height * 0.85
                 // Slide view open.
-                UIView.animateWithDuration(0.5, delay: 0, options: .CurveEaseOut, animations: {
+                UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
                     powerUpsView.frame.origin.y -= amountShown
                     }, completion: nil)
             } else {
-                powerUpsButton.setImage(ImageManager.imageForName("play_powerup"), forState: .Normal)
-                powerUpsButton.setImage(ImageManager.imageForName("play_powerup_highlighted"), forState: .Highlighted)
+                powerUpsButton.setImage(ImageManager.image(forName: "play_powerup"), for: UIControlState())
+                powerUpsButton.setImage(ImageManager.image(forName: "play_powerup_highlighted"), for: .highlighted)
                 
                 // Slide view closed.
-                UIView.animateWithDuration(0.5, delay: 0, options: .CurveEaseIn, animations: {
+                UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
                     self.playView.powerUpsView.frame.origin.y = self.view.frame.height + 1
                     }, completion: nil)
 
@@ -104,53 +104,53 @@ class PlayController: UIViewController {
         didSet {
             if selectedTile == nil {
                 for i in 0..<board.totalTiles {
-                    playView.boardView.tileButtonArray[i].setImage(ImageManager.imageForTile(board[i]), forState: .Normal)
-                    playView.boardView.tileButtonArray[i].setImage(ImageManager.highlightedImageForTile(board[i]), forState: .Highlighted)
+                    playView.boardView.tileButtonArray[i].setImage(ImageManager.image(forTile: board[i]), for: UIControlState())
+                    playView.boardView.tileButtonArray[i].setImage(ImageManager.highlightedImage(forTile: board[i]), for: .highlighted)
                 }
             } else if board[selectedTile!].isFull {
                 for i in 0..<board.totalTiles {
                     if board[i].isFull {
-                        playView.boardView.tileButtonArray[i].setImage(ImageManager.selectedImageForTile(board[i]), forState: .Normal)
-                        playView.boardView.tileButtonArray[i].setImage(ImageManager.selectedImageForTile(board[i]), forState: .Highlighted)
+                        playView.boardView.tileButtonArray[i].setImage(ImageManager.selectedImage(forTile: board[i]), for: UIControlState())
+                        playView.boardView.tileButtonArray[i].setImage(ImageManager.selectedImage(forTile: board[i]), for: .highlighted)
                     } else {
-                        playView.boardView.tileButtonArray[i].setImage(ImageManager.imageForTile(board[i]), forState: .Normal)
-                        playView.boardView.tileButtonArray[i].setImage(ImageManager.highlightedImageForTile(board[i]), forState: .Highlighted)
+                        playView.boardView.tileButtonArray[i].setImage(ImageManager.image(forTile: board[i]), for: UIControlState())
+                        playView.boardView.tileButtonArray[i].setImage(ImageManager.highlightedImage(forTile: board[i]), for: .highlighted)
                     }
                 }
             } else if board[selectedTile!].isNumber {
                 for i in 0..<board.totalTiles {
-                    playView.boardView.tileButtonArray[i].setImage(ImageManager.imageForTile(board[i]), forState: .Normal)
-                    playView.boardView.tileButtonArray[i].setImage(ImageManager.highlightedImageForTile(board[i]), forState: .Highlighted)
+                    playView.boardView.tileButtonArray[i].setImage(ImageManager.image(forTile: board[i]), for: UIControlState())
+                    playView.boardView.tileButtonArray[i].setImage(ImageManager.highlightedImage(forTile: board[i]), for: .highlighted)
                 }
 
                 for direction in Direction.values {
-                    if board.canMoveTile(selectedTile!, inDirection: direction) {
+                    if board.canMoveTile(location: selectedTile!, inDirection: direction) {
                         var locationX = selectedTile!
                         for _ in 0..<board[selectedTile!].intValue! {
-                            locationX = board.shiftFromLocation(locationX, inDirection: direction)!
+                            locationX = board.shift(location: locationX, inDirection: direction)!
                             
-                            playView.boardView.tileButtonArray[locationX].setImage(ImageManager.selectedImageForTile(board[locationX]), forState: .Normal)
-                            playView.boardView.tileButtonArray[locationX].setImage(ImageManager.selectedImageForTile(board[locationX]), forState: .Highlighted)
+                            playView.boardView.tileButtonArray[locationX].setImage(ImageManager.selectedImage(forTile: board[locationX]), for: UIControlState())
+                            playView.boardView.tileButtonArray[locationX].setImage(ImageManager.selectedImage(forTile: board[locationX]), for: .highlighted)
                         }
                     }
                 }
             } else {
                 selectedTile = nil
                 for i in 0..<board.totalTiles {
-                    playView.boardView.tileButtonArray[i].setImage(ImageManager.imageForTile(board[i]), forState: .Normal)
-                    playView.boardView.tileButtonArray[i].setImage(ImageManager.highlightedImageForTile(board[i]), forState: .Highlighted)
+                    playView.boardView.tileButtonArray[i].setImage(ImageManager.image(forTile: board[i]), for: UIControlState())
+                    playView.boardView.tileButtonArray[i].setImage(ImageManager.highlightedImage(forTile: board[i]), for: .highlighted)
                 }
             }
         }
     }
     
     /** `self.view` cast to `PlayView`. */
-    private var playView: PlayView {
+    fileprivate var playView: PlayView {
         // This cast will always succeed if the Storyboard is set up correctly.
         return self.view as! PlayView
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
@@ -195,25 +195,25 @@ class PlayController: UIViewController {
         playView.powerUpsView.magicWandButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(PlayController.magicWandTapped)))
         playView.powerUpsView.boardRepairButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(PlayController.boardRepairTapped)))
         playView.powerUpsView.shuffleButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(PlayController.shuffleTapped)))
-        playView.userInteractionEnabled = true
+        playView.isUserInteractionEnabled = true
         playView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(PlayController.backgroundPressed)))
                 
         for i in 0..<board.totalTiles {
             // Add tile swipe gesture recognizers.
             let swipeGestureRecognizerLeft = UISwipeGestureRecognizer(target: self, action: #selector(PlayController.tileSwiped(_:)));
-            swipeGestureRecognizerLeft.direction = .Left
+            swipeGestureRecognizerLeft.direction = .left
             playView.boardView.tileButtonArray[i].addGestureRecognizer(swipeGestureRecognizerLeft)
             
             let swipeGestureRecognizerRight = UISwipeGestureRecognizer(target: self, action: #selector(PlayController.tileSwiped(_:)));
-            swipeGestureRecognizerRight.direction = .Right
+            swipeGestureRecognizerRight.direction = .right
             playView.boardView.tileButtonArray[i].addGestureRecognizer(swipeGestureRecognizerRight)
             
             let swipeGestureRecognizerUp = UISwipeGestureRecognizer(target: self, action: #selector(PlayController.tileSwiped(_:)));
-            swipeGestureRecognizerUp.direction = .Up
+            swipeGestureRecognizerUp.direction = .up
             playView.boardView.tileButtonArray[i].addGestureRecognizer(swipeGestureRecognizerUp)
             
             let swipeGestureRecognizerDown = UISwipeGestureRecognizer(target: self, action: #selector(PlayController.tileSwiped(_:)));
-            swipeGestureRecognizerDown.direction = .Down
+            swipeGestureRecognizerDown.direction = .down
             playView.boardView.tileButtonArray[i].addGestureRecognizer(swipeGestureRecognizerDown)
             
             // Add tile single-tap gesture recognizer.
@@ -226,7 +226,7 @@ class PlayController: UIViewController {
     
     /** Toggles whether the Power-Ups slider is open/closed. Opens an alert promting the user to visit the Market instead if they're out of Power-Ups. Called when the user taps the powerups button. */
     func powerupsTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         playView.messageLabel.text = nil
         if SavedData.powerupsOwned <= 0 {
             let alert = AlertView()
@@ -234,17 +234,17 @@ class PlayController: UIViewController {
             alert.messageLabel.text =  "Visit the Market to get more?"
             alert.aspectRatio = 1 / 0.85
             
-            alert.topButton.setImage(ImageManager.imageForName("popup_market"), forState: .Normal)
-            alert.topButton.setImage(ImageManager.imageForName("popup_market_highlighted"), forState: .Highlighted)
+            alert.topButton.setImage(ImageManager.image(forName: "popup_market"), for: UIControlState())
+            alert.topButton.setImage(ImageManager.image(forName: "popup_market_highlighted"), for: .highlighted)
             
-            alert.bottomButton.setImage(ImageManager.imageForName("popup_cancel"), forState: .Normal)
-            alert.bottomButton.setImage(ImageManager.imageForName("popup_cancel_highlighted"), forState: .Highlighted)
+            alert.bottomButton.setImage(ImageManager.image(forName: "popup_cancel"), for: UIControlState())
+            alert.bottomButton.setImage(ImageManager.image(forName: "popup_cancel_highlighted"), for: .highlighted)
 
-            mainController.presentAlert(alert, topButtonAction: {
-                MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
-                self.mainController.setViewController(MarketController.ID)
+            mainController.presentAlert(alert: alert, topButtonAction: {
+                MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
+                self.mainController.setViewController(id: MarketController.ID)
             }, bottomButtonAction: {
-                MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+                MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
             })
         } else {
             powerupsOpen = !powerupsOpen
@@ -258,7 +258,7 @@ class PlayController: UIViewController {
         if SavedData.magicWandUsedInCurrentGame {
             playView.messageLabel.text = "You can only use each Power-Up once per game."
         } else {
-            MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
             playView.messageLabel.text = nil
             self.powerupsOpen = false
             board.magicWand()
@@ -273,7 +273,7 @@ class PlayController: UIViewController {
         if SavedData.boardRepairUsedInCurrentGame {
             playView.messageLabel.text = "You can only use each Power-Up once per game."
         } else {
-            MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
             playView.messageLabel.text = nil
             if board.isBroken {
                 self.powerupsOpen = false
@@ -291,7 +291,7 @@ class PlayController: UIViewController {
         if SavedData.shuffleUsedInCurrentGame {
             playView.messageLabel.text = "You can only use each Power-Up once per game."
         } else {
-            MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
             playView.messageLabel.text = nil
             self.powerupsOpen = false
             boardFiller.shuffleBoard()
@@ -305,7 +305,7 @@ class PlayController: UIViewController {
     
     /** Opens a pop-up confirming that the user wants to start a new game, then starts a new game on confirmation. Called when the user taps the new game button. */
     func newGameTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         powerupsOpen = false
         playView.messageLabel.text = nil
         selectedTile = nil
@@ -315,14 +315,14 @@ class PlayController: UIViewController {
         alert.messageLabel.text =  "This will end your current game."
         alert.aspectRatio = 1 / 0.85
         
-        alert.topButton.setImage(ImageManager.imageForName("popup_newgame"), forState: .Normal)
-        alert.topButton.setImage(ImageManager.imageForName("popup_newgame_highlighted"), forState: .Highlighted)
+        alert.topButton.setImage(ImageManager.image(forName: "popup_newgame"), for: UIControlState())
+        alert.topButton.setImage(ImageManager.image(forName: "popup_newgame_highlighted"), for: .highlighted)
         
-        alert.bottomButton.setImage(ImageManager.imageForName("popup_cancel"), forState: .Normal)
-        alert.bottomButton.setImage(ImageManager.imageForName("popup_cancel_highlighted"), forState: .Highlighted)
+        alert.bottomButton.setImage(ImageManager.image(forName: "popup_cancel"), for: UIControlState())
+        alert.bottomButton.setImage(ImageManager.image(forName: "popup_cancel_highlighted"), for: .highlighted)
         
-        mainController.presentAlert(alert, topButtonAction: {
-            MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        mainController.presentAlert(alert: alert, topButtonAction: {
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
             PlayAllAnimationsCompleteListener.reportScoreToGameCenter(self.board.score)
             SavedData.stats.finishTrackingGame()
             SavedData.stats.beginTrackingGame()
@@ -332,7 +332,7 @@ class PlayController: UIViewController {
             self.board.clear()
             self.boardFiller.refillEmptyBoard()
         }, bottomButtonAction: {
-            MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         })
     }
     
@@ -344,24 +344,24 @@ class PlayController: UIViewController {
     - parameters:
         - gestureRecognizer: The `UITapGestureRecognizer` whose touch event resulted in this function call.
     */
-    func tileTapped(gestureRecognizer: UITapGestureRecognizer) {
+    func tileTapped(_ gestureRecognizer: UITapGestureRecognizer) {
         powerupsOpen = false
         playView.messageLabel.text = nil
 
-        let location = playView.boardView.tileButtonArray.indexOf(gestureRecognizer.view as! UIButton)!
+        let location = playView.boardView.tileButtonArray.index(of: gestureRecognizer.view as! UIButton)!
 
         if location == selectedTile || (selectedTile != nil && board[selectedTile!].isFull && board[location].isFull) {
-            MediaPlayer.playMP3Sound(MediaPlayer.selectSoundLocation)
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.selectSoundLocation)
             playView.messageLabel.text = nil
             selectedTile = nil
         } else if board[location].isFull {
-            MediaPlayer.playMP3Sound(MediaPlayer.selectSoundLocation)
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.selectSoundLocation)
             selectedTile = location
             playView.messageLabel.text = "The number on each gold tile is the amount of moves before it turns black."
         } else if board[location].isNumber {
-            MediaPlayer.playMP3Sound(MediaPlayer.selectSoundLocation)
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.selectSoundLocation)
             for direction in Direction.values {
-                if board.canMoveTile(location, inDirection: direction) {
+                if board.canMoveTile(location: location, inDirection: direction) {
                     selectedTile = location
                     playView.messageLabel.text = "The directions that the tapped number can be swiped are shown."
                     return
@@ -370,17 +370,17 @@ class PlayController: UIViewController {
             
             selectedTile = nil
             playView.messageLabel.text = "That number can't be swiped now."
-        } else if board[location] == .Empty && selectedTile != nil && board[selectedTile!].isNumber {
+        } else if board[location] == .empty && selectedTile != nil && board[selectedTile!].isNumber {
             for direction in Direction.values {
                 var locationX: Int? = location
                 for _ in 0..<board[selectedTile!].intValue! {
                     if locationX != nil {
-                        locationX = board.shiftFromLocation(locationX!, inDirection: direction)
+                        locationX = board.shift(location: locationX!, inDirection: direction)
                     }
-                    if locationX == selectedTile && board.canMoveTile(selectedTile!, inDirection: direction.invert()) {
+                    if locationX == selectedTile && board.canMoveTile(location: selectedTile!, inDirection: direction.invert()) {
                         let locationToMove = selectedTile!
                         selectedTile = nil
-                        handleMove(locationToMove, direction: direction.invert())
+                        handleMove(location: locationToMove, direction: direction.invert())
                         return
                     }
                 }
@@ -396,28 +396,28 @@ class PlayController: UIViewController {
      - parameters:
         - gestureRecognizer: The `UISwipeGestureRecognizer` whose touch event resulted in this function call.
      */
-    func tileSwiped(gestureRecognizer: UISwipeGestureRecognizer) {
+    func tileSwiped(_ gestureRecognizer: UISwipeGestureRecognizer) {
         powerupsOpen = false
         playView.messageLabel.text = nil
         selectedTile = nil
 
-        let location = playView.boardView.tileButtonArray.indexOf(gestureRecognizer.view as! UIButton)!
+        let location = playView.boardView.tileButtonArray.index(of: gestureRecognizer.view as! UIButton)!
         var direction: Direction?
         switch (gestureRecognizer.direction) {
-        case UISwipeGestureRecognizerDirection.Up:
-            direction = Direction.Up
-        case UISwipeGestureRecognizerDirection.Down:
-            direction = Direction.Down
-        case UISwipeGestureRecognizerDirection.Right:
-            direction = Direction.Right
-        case UISwipeGestureRecognizerDirection.Left:
-            direction = Direction.Left
+        case UISwipeGestureRecognizerDirection.up:
+            direction = Direction.up
+        case UISwipeGestureRecognizerDirection.down:
+            direction = Direction.down
+        case UISwipeGestureRecognizerDirection.right:
+            direction = Direction.right
+        case UISwipeGestureRecognizerDirection.left:
+            direction = Direction.left
         default:
             // This won't happen, xcode is being dumb.
             break
         }
         
-        handleMove(location, direction: direction!)
+        handleMove(location: location, direction: direction!)
     }
     
     // MARK: Main View Delegate
@@ -438,19 +438,19 @@ class PlayController: UIViewController {
         - location: The location of the `Tile` the user wants to move.
         - direction: The `Direction` the user wants to move the `Tile` in.
      */
-    private func handleMove(location: Int, direction: Direction) {
-        if board.moveTile(location, inDirection: direction) {
-            MediaPlayer.playMP3Sound(MediaPlayer.moveSoundLocation)
+    fileprivate func handleMove(location: Int, direction: Direction) {
+        if board.moveTile(location: location, inDirection: direction) {
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.moveSoundLocation)
             if board.removeLinks() {
                 board.stepTime()
                 boardFiller.refillBoard()
             } else {
                 board.stepTime()
-                boardFiller.addNumber(true)
+                _ = boardFiller.addNumber(notify: true)
             }
         } else if board[location].isNumber {
-            MediaPlayer.playMP3Sound(MediaPlayer.badMoveSoundLocation)
-            boardController.animateBadMove(location)
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.badMoveSoundLocation)
+            boardController.animateBadMove(location: location)
             let intValue = String(board[location].intValue!)
             if intValue == "1" {
                 playView.messageLabel.text = "There must be 1 white tile next to that number to swipe it."
@@ -467,13 +467,13 @@ class PlayController: UIViewController {
 private class PlayScoreListener:NSObject, ScoreListener {
     
     /** The minimum amount of time allowed between changes to the graphical representation of the score (in seconds). */
-    private let updateInterval = 0.1
+    fileprivate let updateInterval = 0.1
     
     /** Updates to the score that haven't been reflected graphically yet. These will be reflected graphically when the appropriate number of `updateInterval`s have passed. */
-    private var pendingChanges = Array<Int>()
+    fileprivate var pendingChanges = Array<Int>()
     
     /** The `UILabel` whose text should represent the current score on `PlayController.board`. */
-    private weak var label: UILabel?
+    fileprivate weak var label: UILabel?
     
     /**
      Sole constructor.
@@ -497,10 +497,10 @@ private class PlayScoreListener:NSObject, ScoreListener {
     }
     
     /** Plays the next pending change, if any. */
-    private func play() {
+    fileprivate func play() {
         if pendingChanges.count != 0 {
-            let time = dispatch_time(DISPATCH_TIME_NOW, Int64(updateInterval * Double(NSEC_PER_SEC)))
-            dispatch_after(time, dispatch_get_main_queue(), {
+            let time = DispatchTime.now() + Double(Int64(updateInterval * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+            DispatchQueue.main.asyncAfter(deadline: time, execute: {
                 self.label?.text = String(self.pendingChanges.removeFirst())
                 self.play()
             })
@@ -520,7 +520,7 @@ private class PlaySecretZlinkListener: NSObject, SecretZlinkListener {
         zlink9.showsCompletionBanner = false
         zlink9.percentComplete = 100
         
-        GKAchievement.reportAchievements([zlink9], withCompletionHandler: {(error : NSError?) -> Void in
+        GKAchievement.report([zlink9], withCompletionHandler: {(error : Error?) -> Void in
             if error != nil {
                 NSLog(error!.localizedDescription)
             }
@@ -546,19 +546,19 @@ private class PlayAllAnimationsCompleteListener: NSObject, AllAnimationsComplete
         - score: The score the user achieved. This score will be reported to Game Center.
      - note: If `score` is above the maximum allowed score by Game Center, the maximum allowed score will be reported. If it is below the minimum allowed score, behavior is undefined.
      */
-    static func reportScoreToGameCenter(score: Int) {
-        if GKLocalPlayer.localPlayer().authenticated == true {
+    static func reportScoreToGameCenter(_ score: Int) {
+        if GKLocalPlayer.localPlayer().isAuthenticated == true {
             let bestScoreLeaderboard = GKLeaderboard()
             bestScoreLeaderboard.identifier = "best_score"
-            bestScoreLeaderboard.timeScope = .AllTime
+            bestScoreLeaderboard.timeScope = .allTime
             bestScoreLeaderboard.range = NSMakeRange(1, 1)
-            bestScoreLeaderboard.loadScoresWithCompletionHandler({ _ in
+            bestScoreLeaderboard.loadScores(completionHandler: { _ in
                 if bestScoreLeaderboard.localPlayerScore != nil {
                     if Int64(score) > bestScoreLeaderboard.localPlayerScore!.value {
                         let scoreReporter = GKScore(leaderboardIdentifier: "best_score")
                         scoreReporter.value = Int64(min(999, score))
                         let scoreArray: [GKScore] = [scoreReporter]
-                        GKScore.reportScores(scoreArray, withCompletionHandler: {(error : NSError?) -> Void in
+                        GKScore.report(scoreArray, withCompletionHandler: {(error : Error?) -> Void in
                             if error != nil {
                                 NSLog(error!.localizedDescription)
                             }
@@ -568,7 +568,7 @@ private class PlayAllAnimationsCompleteListener: NSObject, AllAnimationsComplete
                     let scoreReporter = GKScore(leaderboardIdentifier: "best_score")
                     scoreReporter.value = Int64(min(999, score))
                     let scoreArray: [GKScore] = [scoreReporter]
-                    GKScore.reportScores(scoreArray, withCompletionHandler: {(error : NSError?) -> Void in
+                    GKScore.report(scoreArray, withCompletionHandler: {(error : Error?) -> Void in
                         if error != nil {
                             NSLog(error!.localizedDescription)
                         }
@@ -578,9 +578,9 @@ private class PlayAllAnimationsCompleteListener: NSObject, AllAnimationsComplete
             
             let leaderboard = GKLeaderboard()
             leaderboard.identifier = "zlinks_linked"
-            leaderboard.timeScope = .AllTime
+            leaderboard.timeScope = .allTime
             leaderboard.range = NSMakeRange(1, 1)
-            leaderboard.loadScoresWithCompletionHandler({ _ in
+            leaderboard.loadScores(completionHandler: { _ in
                 var totalZlinksLinked = Int64(score)
                 if leaderboard.localPlayerScore != nil {
                     totalZlinksLinked += leaderboard.localPlayerScore!.value
@@ -588,7 +588,7 @@ private class PlayAllAnimationsCompleteListener: NSObject, AllAnimationsComplete
                 let zlinksLinkedReporter = GKScore(leaderboardIdentifier: "zlinks_linked")
                 zlinksLinkedReporter.value = Int64(min(999999, totalZlinksLinked))
                 let zlinksLinkedArray: [GKScore] = [zlinksLinkedReporter]
-                GKScore.reportScores(zlinksLinkedArray, withCompletionHandler: {(error : NSError?) -> Void in
+                GKScore.report(zlinksLinkedArray, withCompletionHandler: {(error : Error?) -> Void in
                     if error != nil {
                         NSLog(error!.localizedDescription)
                     }
@@ -649,7 +649,7 @@ private class PlayAllAnimationsCompleteListener: NSObject, AllAnimationsComplete
             achievements.append(zlink8)
         }
         
-        GKAchievement.reportAchievements(achievements, withCompletionHandler: {(error : NSError?) -> Void in
+        GKAchievement.report(achievements, withCompletionHandler: {(error : Error?) -> Void in
             if error != nil {
                 NSLog(error!.localizedDescription)
             }
@@ -675,12 +675,12 @@ private class PlayAllAnimationsCompleteListener: NSObject, AllAnimationsComplete
                 board.stepTime()
                 boardFiller.refillBoard()
             } else if board.isGameOver {
-                MediaPlayer.playMP3Sound(MediaPlayer.gameoverSoundLocation)
+                MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.gameoverSoundLocation)
                 PlayAllAnimationsCompleteListener.reportScoreToGameCenter(board.score)
                 SavedData.stats.finishTrackingGame()
                 
                 // Open gameover scene.
-                playController?.mainController.setViewController(GameoverController.ID)
+                playController?.mainController.setViewController(id: GameoverController.ID)
             }
         }
     }

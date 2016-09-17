@@ -54,14 +54,14 @@ class HighScore: NSObject, NSCoding {
     // MARK: NSCoding
     
     required convenience init?(coder aDecoder: NSCoder) {
-        let score = aDecoder.decodeIntegerForKey(HighScoreEncodingKeys.scoreKey)
-        let date = aDecoder.decodeObjectForKey(HighScoreEncodingKeys.dateKey) as! String
+        let score = aDecoder.decodeInteger(forKey: HighScoreEncodingKeys.scoreKey)
+        let date = aDecoder.decodeObject(forKey: HighScoreEncodingKeys.dateKey) as! String
         self.init(score: score, date: date)
     }
     
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeInteger(score, forKey: HighScoreEncodingKeys.scoreKey)
-        aCoder.encodeObject(date, forKey: HighScoreEncodingKeys.dateKey)
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(score, forKey: HighScoreEncodingKeys.scoreKey)
+        aCoder.encode(date, forKey: HighScoreEncodingKeys.dateKey)
     }
     
 }

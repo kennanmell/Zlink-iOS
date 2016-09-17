@@ -18,7 +18,7 @@ class HomeView: UIView {
     // MARK: Properties
     
     /** Displays the title image. */
-    let titleImage = UIImageView(image: ImageManager.imageForName("home_title"))
+    let titleImage = UIImageView(image: ImageManager.image(forName: "home_title"))
     
     /** Used as the trophy case displaying the Zlinks seen by the player. */
     let boardView = BoardView(length: 3 /* 3x3=9 is the number of different Zlink types. */)
@@ -33,8 +33,8 @@ class HomeView: UIView {
         super.init(coder: aDecoder)
         backgroundColor = ImageManager.appBackgroundColor
         
-        playButton.setImage(ImageManager.imageForName("play_button"), forState: .Normal)
-        playButton.setImage(ImageManager.imageForName("play_button_highlighted"), forState: .Highlighted)
+        playButton.setImage(ImageManager.image(forName: "play_button"), for: UIControlState())
+        playButton.setImage(ImageManager.image(forName: "play_button_highlighted"), for: .highlighted)
         
         for tile in boardView.tileButtonArray {
             tile.adjustsImageWhenHighlighted = false
@@ -63,7 +63,7 @@ class HomeView: UIView {
         let horizontalMargin: CGFloat
         // The amount of the height of the screen (on each side, not including the top bar) to reserve for padding.
         let verticalMargin: CGFloat
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             // iPad
             horizontalMargin = self.frame.width * 0.22
             verticalMargin = self.frame.height * 0.065

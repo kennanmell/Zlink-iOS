@@ -59,7 +59,7 @@ class MenuView: UIView {
         super.init(frame: superViewFrame)
         
         let menuWidth: CGFloat
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             menuWidth = superViewFrame.width * 0.5
         } else {
             let topBarAspectRatio: CGFloat = 2.5 / 0.324
@@ -73,17 +73,17 @@ class MenuView: UIView {
 
         // Set up images displayed by buttons.
         // Note: Images with non-constant displays should be set by controller.
-        leaderboardButton.setImage(ImageManager.imageForName("menu_home"), forState: .Normal)
-        leaderboardButton.setImage(ImageManager.imageForName("menu_home_highlighted"), forState: .Highlighted)
+        leaderboardButton.setImage(ImageManager.image(forName: "menu_home"), for: UIControlState())
+        leaderboardButton.setImage(ImageManager.image(forName: "menu_home_highlighted"), for: .highlighted)
         
-        scoresButton.setImage(ImageManager.imageForName("menu_scores"), forState: .Normal)
-        scoresButton.setImage(ImageManager.imageForName("menu_scores_highlighted"), forState: .Highlighted)
+        scoresButton.setImage(ImageManager.image(forName: "menu_scores"), for: UIControlState())
+        scoresButton.setImage(ImageManager.image(forName: "menu_scores_highlighted"), for: .highlighted)
         
-        marketButton.setImage(ImageManager.imageForName("menu_store"), forState: .Normal)
-        marketButton.setImage(ImageManager.imageForName("menu_store_highlighted"), forState: .Highlighted)
+        marketButton.setImage(ImageManager.image(forName: "menu_store"), for: UIControlState())
+        marketButton.setImage(ImageManager.image(forName: "menu_store_highlighted"), for: .highlighted)
         
-        tutorialButton.setImage(ImageManager.imageForName("menu_tutorial"), forState: .Normal)
-        tutorialButton.setImage(ImageManager.imageForName("menu_tutorial_highlighted"), forState: .Highlighted)
+        tutorialButton.setImage(ImageManager.image(forName: "menu_tutorial"), for: UIControlState())
+        tutorialButton.setImage(ImageManager.image(forName: "menu_tutorial_highlighted"), for: .highlighted)
         
         // Set up blur
         purpleView.backgroundColor = UIColor(red: 64.0 / 255.0, green: 40.0 / 255.0, blue: 64.0 / 255.0, alpha: 1.0)

@@ -40,37 +40,37 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
             
             if !menuOpen && oldValue {
                 self.menuView.leftoverView.backgroundColor = nil
-                UIApplication.sharedApplication().beginIgnoringInteractionEvents()
-                UIView.animateWithDuration(menuSlideAnimationDuration, delay:0, options: .CurveEaseIn, animations: {
+                UIApplication.shared.beginIgnoringInteractionEvents()
+                UIView.animate(withDuration: menuSlideAnimationDuration, delay:0, options: .curveEaseIn, animations: {
                     self.menuView.frame.origin.x += self.menuView.menuFrame.width
                     }, completion: { _ in
                         self.menuView.frame.origin.x = self.view.frame.width + 1
-                        UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                        UIApplication.shared.endIgnoringInteractionEvents()
                 })
             } else if menuOpen && !oldValue {
                 // Make sure button images are up-to-date
                 if SavedData.stats.isTrackingGame {
-                    menuView.playButton.setImage(ImageManager.imageForName("menu_play"), forState: .Normal)
-                    menuView.playButton.setImage(ImageManager.imageForName("menu_play_highlighted"), forState: .Highlighted)
+                    menuView.playButton.setImage(ImageManager.image(forName: "menu_play"), for: UIControlState())
+                    menuView.playButton.setImage(ImageManager.image(forName: "menu_play_highlighted"), for: .highlighted)
                 } else {
-                    menuView.playButton.setImage(ImageManager.imageForName("menu_newgame"), forState: .Normal)
-                    menuView.playButton.setImage(ImageManager.imageForName("menu_newgame_highlighted"), forState: .Highlighted)
+                    menuView.playButton.setImage(ImageManager.image(forName: "menu_newgame"), for: UIControlState())
+                    menuView.playButton.setImage(ImageManager.image(forName: "menu_newgame_highlighted"), for: .highlighted)
                 }
                 
                 if SavedData.musicOn {
-                    menuView.musicButton.setImage(ImageManager.imageForName("menu_music_on"), forState: .Normal)
-                    menuView.musicButton.setImage(ImageManager.imageForName("menu_music_on_highlighted"), forState: .Highlighted)
+                    menuView.musicButton.setImage(ImageManager.image(forName: "menu_music_on"), for: UIControlState())
+                    menuView.musicButton.setImage(ImageManager.image(forName: "menu_music_on_highlighted"), for: .highlighted)
                 } else {
-                    menuView.musicButton.setImage(ImageManager.imageForName("menu_music_off"), forState: .Normal)
-                    menuView.musicButton.setImage(ImageManager.imageForName("menu_music_off_highlighted"), forState: .Highlighted)
+                    menuView.musicButton.setImage(ImageManager.image(forName: "menu_music_off"), for: UIControlState())
+                    menuView.musicButton.setImage(ImageManager.image(forName: "menu_music_off_highlighted"), for: .highlighted)
                 }
                 
                 if SavedData.sfxOn {
-                    menuView.sfxButton.setImage(ImageManager.imageForName("menu_sfx_on"), forState: .Normal)
-                    menuView.sfxButton.setImage(ImageManager.imageForName("menu_sfx_on_highlighted"), forState: .Highlighted)
+                    menuView.sfxButton.setImage(ImageManager.image(forName: "menu_sfx_on"), for: UIControlState())
+                    menuView.sfxButton.setImage(ImageManager.image(forName: "menu_sfx_on_highlighted"), for: .highlighted)
                 } else {
-                    menuView.sfxButton.setImage(ImageManager.imageForName("menu_sfx_off"), forState: .Normal)
-                    menuView.sfxButton.setImage(ImageManager.imageForName("menu_sfx_off_highlighted"), forState: .Highlighted)
+                    menuView.sfxButton.setImage(ImageManager.image(forName: "menu_sfx_off"), for: UIControlState())
+                    menuView.sfxButton.setImage(ImageManager.image(forName: "menu_sfx_off_highlighted"), for: .highlighted)
                 }
                 
                 // Clean the `PlayController` if it's open.
@@ -83,35 +83,35 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
                 
                 self.menuView.frame.origin.x = 0
                 self.menuView.leftoverView.backgroundColor = UIColor(white: 0.2, alpha: 0.5)
-                UIApplication.sharedApplication().beginIgnoringInteractionEvents()
-                UIView.animateWithDuration(menuSlideAnimationDuration, delay: 0, options: .CurveEaseOut, animations: {
+                UIApplication.shared.beginIgnoringInteractionEvents()
+                UIView.animate(withDuration: menuSlideAnimationDuration, delay: 0, options: .curveEaseOut, animations: {
                     self.menuView.frame.origin.x = -1 * self.menuView.menuFrame.width + 1
                     }, completion: { _ in
-                        UIApplication.sharedApplication().endIgnoringInteractionEvents()
+                        UIApplication.shared.endIgnoringInteractionEvents()
                 })
             }
         }
     }
     
     /** A weak reference to the side menu view. */
-    private weak var menuView: MenuView!
+    fileprivate weak var menuView: MenuView!
     
     /** `self.navigationBar` cast to `TopBarView`. */
-    private var topBarView: TopBarView {
+    fileprivate var topBarView: TopBarView {
         // This cast will always succeed if the Storyboard is set up correctly.
         return navigationBar as! TopBarView
     }
     
     /** The `AlertView` currently displayed by this `MainController`, or `nil` if no `AlertView` is currently displayed. */
-    private var displayedAlert: AlertView?
+    fileprivate var displayedAlert: AlertView?
     
     /** The action to perform when the top button of `displayedAlert` is pressed. */
-    private var topButtonAction: () -> Void = {}
+    fileprivate var topButtonAction: () -> Void = {}
     
     /** The action to perform when the bottom button of `displayedAlert` is pressed. */
-    private var bottomButtonAction: () -> Void = {}
+    fileprivate var bottomButtonAction: () -> Void = {}
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
@@ -131,7 +131,7 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
         view.addSubview(menuView)
         
         // Make sure top bar appears in front of side menu.
-        view.bringSubviewToFront(navigationBar)
+        view.bringSubview(toFront: navigationBar)
         
         // Prepare top bar gesture recognizers.
         topBarView.menuButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MainController.menuTapped)))
@@ -147,7 +147,7 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
         menuView.tutorialButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MainController.tutorialTapped)))
         menuView.leftoverView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MainController.menuClosed)))
         let swipeToCloseAction = UISwipeGestureRecognizer(target: self, action: #selector(MainController.menuClosed))
-        swipeToCloseAction.direction = .Right
+        swipeToCloseAction.direction = .right
         menuView.leftoverView.addGestureRecognizer(swipeToCloseAction)
     }
     
@@ -163,7 +163,7 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
     func setViewController(id: String) {
         menuOpen = false
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main",bundle: nil)
-        let destViewController = mainStoryboard.instantiateViewControllerWithIdentifier(id)
+        let destViewController = mainStoryboard.instantiateViewController(withIdentifier: id)
         
         let currentClassName = NSStringFromClass(object_getClass(getCurrentViewController()))
         let newClassName = NSStringFromClass(object_getClass(destViewController))
@@ -183,17 +183,17 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
     }
     
     /** Recursive helper function that gets the "top" `UIViewController`. Used to determine whenter not to switch scenes when `setViewController` is called. */
-    private func getCurrentViewController(base: UIViewController? = UIApplication.sharedApplication().keyWindow?.rootViewController) -> UIViewController? {
+    fileprivate func getCurrentViewController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
         if let nav = base as? UINavigationController {
-            return getCurrentViewController(nav.visibleViewController)
+            return getCurrentViewController(base: nav.visibleViewController)
         }
         if let tab = base as? UITabBarController {
             if let selected = tab.selectedViewController {
-                return getCurrentViewController(selected)
+                return getCurrentViewController(base: selected)
             }
         }
         if let presented = base?.presentedViewController {
-            return getCurrentViewController(presented)
+            return getCurrentViewController(base: presented)
         }
         
         return base
@@ -202,8 +202,8 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
     
     // MARK: GKGameCenterControllerDelegate
     
-    func gameCenterViewControllerDidFinish(gcViewController: GKGameCenterViewController) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    func gameCenterViewControllerDidFinish(_ gcViewController: GKGameCenterViewController) {
+        self.dismiss(animated: true, completion: nil)
     }
     
     
@@ -211,14 +211,14 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
     
     /** Called when user taps the menu button. */
     func menuTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         menuOpen = !menuOpen
     }
     
     /** Called when user taps the home button. */
     func homeTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
-        setViewController(HomeController.ID)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
+        setViewController(id: HomeController.ID)
     }
     
     
@@ -231,67 +231,67 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
     
     /** Called when user taps the play/new game button. */
     func playTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
-        setViewController(PlayController.ID)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
+        setViewController(id: PlayController.ID)
     }
     
     /** Called when user taps the leaderboard button. */
     func leaderboardTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         
         // Show game center leaderboard
         let gcViewController: GKGameCenterViewController = GKGameCenterViewController()
         gcViewController.gameCenterDelegate = self
-        gcViewController.viewState = GKGameCenterViewControllerState.Leaderboards
+        gcViewController.viewState = GKGameCenterViewControllerState.leaderboards
         gcViewController.leaderboardIdentifier = "best_score"
-        self.presentViewController(gcViewController, animated: true, completion: nil)
+        self.present(gcViewController, animated: true, completion: nil)
 
     }
     
     /** Called when user taps the scores button. */
     func scoresTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
-        setViewController(StatsController.ID)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
+        setViewController(id: StatsController.ID)
     }
     
     /** Called when user taps the market button. */
     func marketTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
-        setViewController(MarketController.ID)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
+        setViewController(id: MarketController.ID)
     }
     
     /** Called when user taps the SFX toggle button. */
     func sfxTapped() {
         if SavedData.sfxOn {
-            menuView.sfxButton.setImage(ImageManager.imageForName("menu_sfx_off"), forState: .Normal)
-            menuView.sfxButton.setImage(ImageManager.imageForName("menu_sfx_off_highlighted"), forState: .Highlighted)
+            menuView.sfxButton.setImage(ImageManager.image(forName: "menu_sfx_off"), for: UIControlState())
+            menuView.sfxButton.setImage(ImageManager.image(forName: "menu_sfx_off_highlighted"), for: .highlighted)
         } else {
-            menuView.sfxButton.setImage(ImageManager.imageForName("menu_sfx_on"), forState: .Normal)
-            menuView.sfxButton.setImage(ImageManager.imageForName("menu_sfx_on_highlighted"), forState: .Highlighted)
+            menuView.sfxButton.setImage(ImageManager.image(forName: "menu_sfx_on"), for: UIControlState())
+            menuView.sfxButton.setImage(ImageManager.image(forName: "menu_sfx_on_highlighted"), for: .highlighted)
         }
         SavedData.sfxOn = !SavedData.sfxOn
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
     }
     
     /** Called when user taps the music toggle button. */
     func musicTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         SavedData.musicOn = !SavedData.musicOn
         if SavedData.musicOn {
             MediaPlayer.isPlayingBackgroundMusic = true
-            menuView.musicButton.setImage(ImageManager.imageForName("menu_music_on"), forState: .Normal)
-            menuView.musicButton.setImage(ImageManager.imageForName("menu_music_on_highlighted"), forState: .Highlighted)
+            menuView.musicButton.setImage(ImageManager.image(forName: "menu_music_on"), for: UIControlState())
+            menuView.musicButton.setImage(ImageManager.image(forName: "menu_music_on_highlighted"), for: .highlighted)
         } else {
             MediaPlayer.isPlayingBackgroundMusic = false
-            menuView.musicButton.setImage(ImageManager.imageForName("menu_music_off"), forState: .Normal)
-            menuView.musicButton.setImage(ImageManager.imageForName("menu_music_off_highlighted"), forState: .Highlighted)
+            menuView.musicButton.setImage(ImageManager.image(forName: "menu_music_off"), for: UIControlState())
+            menuView.musicButton.setImage(ImageManager.image(forName: "menu_music_off_highlighted"), for: .highlighted)
         }
     }
     
     /** Called when user taps the tutorial button. */
     func tutorialTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
-        setViewController(TutorialController.ID)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
+        setViewController(id: TutorialController.ID)
     }
     
     
@@ -304,7 +304,7 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
         - topButtonAction: The action to take if the top button of `alert` is pressed. The alert is dismissed after performing this action. Ignored if the image displayed by `alert`'s top button is nil.
         - bottomButtonAction: The action to take if the bottom button of `alert` is pressed. The alert is dismissed after performing this action.
      */
-    func presentAlert(alert: AlertView, topButtonAction: () -> Void, bottomButtonAction: () -> Void) {
+    func presentAlert(alert: AlertView, topButtonAction: @escaping () -> Void, bottomButtonAction: @escaping () -> Void) {
         self.dismissAlert()
         if (alert.topButton.currentImage != nil) {
             self.topButtonAction = topButtonAction
@@ -316,7 +316,7 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
         alert.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MainController.dismissAlert)))
         alert.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height)
         self.view.addSubview(alert)
-        self.view.bringSubviewToFront(alert)
+        self.view.bringSubview(toFront: alert)
         
         // Notify tutorial of change if it's open.
         let viewController = getCurrentViewController()
@@ -326,7 +326,7 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
     }
     
     /** Dismisses the currently displayed alert (if any). Called after performing an action on the currently displayed alert, or if the user taps outside the bounds of the currently displayed alert while it's being displayed. */
-    @objc private func dismissAlert() {
+    @objc fileprivate func dismissAlert() {
         self.topButtonAction = {}
         self.bottomButtonAction = {}
         self.displayedAlert?.removeFromSuperview()
@@ -340,13 +340,13 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
     }
     
     /** Called when user taps the top button (if any) of the currently displayed alert (if any). */
-    @objc private func topAlertButtonTapped() {
+    @objc fileprivate func topAlertButtonTapped() {
         topButtonAction()
         dismissAlert()
     }
     
     /** Called when user taps the bottom button (if any) of the currently displayed alert (if any). */
-    @objc private func bottomAlertButtonTapped() {
+    @objc fileprivate func bottomAlertButtonTapped() {
         bottomButtonAction()
         dismissAlert()
     }

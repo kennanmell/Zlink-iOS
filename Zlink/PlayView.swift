@@ -27,7 +27,7 @@ class PlayView: UIView {
     let messageLabel = UILabel()
     
     /** Displays the bottom bar background. */
-    let bottomBarImage = UIImageView(image: ImageManager.imageForName("play_bottom_bar_background"))
+    let bottomBarImage = UIImageView(image: ImageManager.image(forName: "play_bottom_bar_background"))
     
     /** Used to toggle the Power-Ups slider. */
     let powerupsButton = UIButton()
@@ -45,19 +45,19 @@ class PlayView: UIView {
         super.init(coder: aDecoder)
         backgroundColor = ImageManager.appBackgroundColor
         
-        messageLabel.lineBreakMode = .ByWordWrapping
+        messageLabel.lineBreakMode = .byWordWrapping
         messageLabel.adjustsFontSizeToFitWidth = true
         messageLabel.numberOfLines = 0
-        messageLabel.textAlignment = .Center
+        messageLabel.textAlignment = .center
         
-        powerupsButton.setImage(ImageManager.imageForName("play_powerup"), forState: .Normal)
-        powerupsButton.setImage(ImageManager.imageForName("play_powerup_highlighted"), forState: .Highlighted)
+        powerupsButton.setImage(ImageManager.image(forName: "play_powerup"), for: UIControlState())
+        powerupsButton.setImage(ImageManager.image(forName: "play_powerup_highlighted"), for: .highlighted)
         
-        restartButton.setImage(ImageManager.imageForName("play_reset"), forState: .Normal)
-        restartButton.setImage(ImageManager.imageForName("play_reset_highlighted"), forState: .Highlighted)
+        restartButton.setImage(ImageManager.image(forName: "play_reset"), for: UIControlState())
+        restartButton.setImage(ImageManager.image(forName: "play_reset_highlighted"), for: .highlighted)
         
         scoreLabel.text = "0"
-        scoreLabel.textAlignment = .Center
+        scoreLabel.textAlignment = .center
         scoreLabel.textColor = UIColor(white: 39.0 / 255.0, alpha: 1.0)
         
         addSubview(boardView)
@@ -83,7 +83,7 @@ class PlayView: UIView {
         
         // The width (and height) of `boardView`.
         let boardViewDimension: CGFloat
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             // iPad
             boardViewDimension = self.frame.width * 0.75
             messageLabel.font = UIFont(name: "Dosis", size: self.frame.width / 20)

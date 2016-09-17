@@ -20,10 +20,10 @@ class TopBarView: UINavigationBar {
     // MARK: Properties
     
     /** The height of the top bar. Updated by each instance of `TopBarView` each time its subviews are laid out. */
-    private(set) static var topBarHeight: CGFloat!
+    fileprivate(set) static var topBarHeight: CGFloat!
         
     /** Displays the Zlink logo. */
-    let backgroundImage = UIImageView(image: ImageManager.imageForName("topbar_background"))
+    let backgroundImage = UIImageView(image: ImageManager.image(forName: "topbar_background"))
     
     /** Displays the name of the current page. */
     let titleLabel = UILabel()
@@ -50,19 +50,19 @@ class TopBarView: UINavigationBar {
     }
     
     /** Shared initializer. */
-    private func initialize() {
+    fileprivate func initialize() {
         for subview in subviews{
             // To get rid of that weird white background color.
-            subview.hidden = true
+            subview.isHidden = true
         }
         
-        menuButton.setImage(ImageManager.imageForName("topbar_menu"), forState: .Normal)
-        menuButton.setImage(ImageManager.imageForName("topbar_menu_selected"), forState: .Highlighted)
+        menuButton.setImage(ImageManager.image(forName: "topbar_menu"), for: UIControlState())
+        menuButton.setImage(ImageManager.image(forName: "topbar_menu_selected"), for: .highlighted)
         
-        homeButton.setImage(ImageManager.imageForName("topbar_zlink"), forState: .Normal)
-        homeButton.setImage(ImageManager.imageForName("topbar_zlink_excited"), forState: .Highlighted)
+        homeButton.setImage(ImageManager.image(forName: "topbar_zlink"), for: UIControlState())
+        homeButton.setImage(ImageManager.image(forName: "topbar_zlink_excited"), for: .highlighted)
         
-        titleLabel.textAlignment = .Center
+        titleLabel.textAlignment = .center
         titleLabel.textColor = UIColor(red: 244.0 / 255.0, green: 246.0 / 255.0, blue: 239.0 / 255.0, alpha: 1.0)
         
         addSubview(backgroundImage)

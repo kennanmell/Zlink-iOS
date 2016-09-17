@@ -33,7 +33,7 @@ class MarketView: UIView {
     let powerupsInventoryLabel = UILabel()
     
     /** Displays the background behind the pager. */
-    let pagerImage = UIImageView(image: ImageManager.imageForName("market_pager_background"))
+    let pagerImage = UIImageView(image: ImageManager.image(forName: "market_pager_background"))
     
     /** Used to navigate left on the pager. */
     let leftPagerButton = UIButton()
@@ -53,31 +53,31 @@ class MarketView: UIView {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        pagerView.addSubview(UIImageView(image: ImageManager.imageForName("market_pager_1")))
+        pagerView.addSubview(UIImageView(image: ImageManager.image(forName: "market_pager_1")))
         pagerView.addSubview(powerupsInventoryLabel)
 
         backgroundColor = ImageManager.appBackgroundColor
         
-        watchAdButton.setImage(ImageManager.imageForName("market_ad"), forState: .Normal)
-        watchAdButton.setImage(ImageManager.imageForName("market_ad_highlighted"), forState: .Highlighted)
+        watchAdButton.setImage(ImageManager.image(forName: "market_ad"), for: UIControlState())
+        watchAdButton.setImage(ImageManager.image(forName: "market_ad_highlighted"), for: .highlighted)
         
-        powerups10Button.setImage(ImageManager.imageForName("market_powerup_10"), forState: .Normal)
-        powerups10Button.setImage(ImageManager.imageForName("market_powerup_10_highlighted"), forState: .Highlighted)
+        powerups10Button.setImage(ImageManager.image(forName: "market_powerup_10"), for: UIControlState())
+        powerups10Button.setImage(ImageManager.image(forName: "market_powerup_10_highlighted"), for: .highlighted)
         
-        powerups50Button.setImage(ImageManager.imageForName("market_powerup_50"), forState: .Normal)
-        powerups50Button.setImage(ImageManager.imageForName("market_powerup_50_highlighted"), forState: .Highlighted)
+        powerups50Button.setImage(ImageManager.image(forName: "market_powerup_50"), for: UIControlState())
+        powerups50Button.setImage(ImageManager.image(forName: "market_powerup_50_highlighted"), for: .highlighted)
 
-        powerups200Button.setImage(ImageManager.imageForName("market_powerup_200"), forState: .Normal)
-        powerups200Button.setImage(ImageManager.imageForName("market_powerup_200_highlighted"), forState: .Highlighted)
+        powerups200Button.setImage(ImageManager.image(forName: "market_powerup_200"), for: UIControlState())
+        powerups200Button.setImage(ImageManager.image(forName: "market_powerup_200_highlighted"), for: .highlighted)
         
-        leftPagerButton.setImage(ImageManager.imageForName("market_pager_left"), forState: .Normal)
-        rightPagerButton.setImage(ImageManager.imageForName("market_pager_right"), forState: .Normal)
+        leftPagerButton.setImage(ImageManager.image(forName: "market_pager_left"), for: UIControlState())
+        rightPagerButton.setImage(ImageManager.image(forName: "market_pager_right"), for: UIControlState())
         
-        powerupsInventoryLabel.textAlignment = .Center
+        powerupsInventoryLabel.textAlignment = .center
         powerupsInventoryLabel.textColor = UIColor(red: 199.0 / 255.0, green: 153.0 / 255.0, blue: 71.0 / 255.0, alpha: 1.0)
         
         rewardLabel.backgroundColor = UIColor(white: 64.0 / 255.0, alpha: 1.0)
-        rewardLabel.textAlignment = .Center
+        rewardLabel.textAlignment = .center
         rewardLabel.textColor = UIColor(red: 236.0 / 255.0, green: 239.0 / 255.0, blue: 232.0 / 255.0, alpha: 1.0)
         rewardLabel.text = "Reward earned!"
         rewardLabel.adjustsFontSizeToFitWidth = true
@@ -117,7 +117,7 @@ class MarketView: UIView {
         let rewardLabelAspectRatio: CGFloat
         // The unscaled text size of the reward message label.
         let rewardLabelTextSize: CGFloat
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             // iPad
             horizontalMargin = self.frame.width * 0.22
             verticalMargin = self.frame.height * 0.035

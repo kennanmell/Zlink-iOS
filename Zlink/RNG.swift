@@ -75,7 +75,7 @@ struct RNG {
             distribution[i] = distribution[i] + distribution[i - 1]
         }
         
-        let uniformResult = generateInt(distribution[distribution.count - 1])
+        let uniformResult = generateInt(ceiling: distribution[distribution.count - 1])
         
         for i in 0..<distribution.count {
             if uniformResult < distribution[i] {

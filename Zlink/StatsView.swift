@@ -18,13 +18,13 @@ class StatsView: UIView {
     // MARK: Properties
     
     /** Background of the Zlinks linked stat. */
-    private let zlinksLinkedImage = UIImageView(image: ImageManager.imageForName("scores_zlinks_linked"))
+    fileprivate let zlinksLinkedImage = UIImageView(image: ImageManager.image(forName: "scores_zlinks_linked"))
     
     /** Displays the Zlinks linked stat. */
     let zlinksLinkedLabel = UILabel()
     
     /** Background of the games played stat. */
-    private let gamesPlayedImage = UIImageView(image: ImageManager.imageForName("scores_games_played"))
+    fileprivate let gamesPlayedImage = UIImageView(image: ImageManager.image(forName: "scores_games_played"))
     
     /** Displays the games played stat. */
     let gamesPlayedLabel = UILabel()
@@ -36,10 +36,10 @@ class StatsView: UIView {
     let shareButton = UIButton()
     
     /** Used to display the user's highest scores. Should be initialized with the number of scores it needs to display. */
-    private let statsScrollView = StatsScrollView(numberOfScores: SavedData.stats.count)
+    fileprivate let statsScrollView = StatsScrollView(numberOfScores: SavedData.stats.count)
     
     /** Background of the high scores scroller. */
-    private let highScoresImage = UIImageView(image: ImageManager.imageForName("scores_high_scores_background"))
+    fileprivate let highScoresImage = UIImageView(image: ImageManager.image(forName: "scores_high_scores_background"))
     
     /** Its contents are the backgrounds behind the player's high scores (ordered from highest to lowest score). */
     var highScoreImagesArray: Array<UIButton> {
@@ -58,15 +58,15 @@ class StatsView: UIView {
         super.init(coder: aDecoder)
         backgroundColor = ImageManager.appBackgroundColor
         
-        resetDataButton.setImage(ImageManager.imageForName("scores_reset"), forState: .Normal)
-        resetDataButton.setImage(ImageManager.imageForName("scores_reset_highlighted"), forState: .Highlighted)
-        shareButton.setImage(ImageManager.imageForName("scores_share"), forState: .Normal)
-        shareButton.setImage(ImageManager.imageForName("scores_share_highlighted"), forState: .Highlighted)
+        resetDataButton.setImage(ImageManager.image(forName: "scores_reset"), for: UIControlState())
+        resetDataButton.setImage(ImageManager.image(forName: "scores_reset_highlighted"), for: .highlighted)
+        shareButton.setImage(ImageManager.image(forName: "scores_share"), for: UIControlState())
+        shareButton.setImage(ImageManager.image(forName: "scores_share_highlighted"), for: .highlighted)
         
         zlinksLinkedLabel.text = "000"
         gamesPlayedLabel.text = "000"
-        zlinksLinkedLabel.textAlignment = .Center
-        gamesPlayedLabel.textAlignment = .Center
+        zlinksLinkedLabel.textAlignment = .center
+        gamesPlayedLabel.textAlignment = .center
         zlinksLinkedLabel.textColor = UIColor(red: 229.0 / 255.0, green: 231.0 / 255.0, blue: 224.0 / 255.0, alpha: 1.0)
         gamesPlayedLabel.textColor = UIColor(red: 229.0 / 255.0, green: 231.0 / 255.0, blue: 224.0 / 255.0, alpha: 1.0)
         
@@ -99,7 +99,7 @@ class StatsView: UIView {
         let horizontalMargin: CGFloat
         // The amount of the height of the screen (on each side, not including the top bar) to reserve for padding.
         let verticalMargin: CGFloat
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             // iPad
             horizontalMargin = self.frame.width * 0.25
             verticalMargin = self.frame.height * 0.02
@@ -186,19 +186,19 @@ private class StatsScrollView: UIScrollView {
         // Placeholder frame.
         super.init(frame: CGRect(x: 0, y: 0, width: 1, height: 1))
         
-        self.indicatorStyle = .White
+        self.indicatorStyle = .white
         
         // Add all the new high scores.
         for _ in 0..<numberOfScores {
             let button = UIButton()
             button.adjustsImageWhenHighlighted = false
-            button.setImage(ImageManager.imageForName("scores_score_background"), forState: .Normal)
+            button.setImage(ImageManager.image(forName: "scores_score_background"), for: UIControlState())
             highScoreImagesArray.append(button)
             addSubview(button)
             
             let label = UILabel()
             label.textColor = UIColor(white: 39.0 / 255.0, alpha: 1.0)
-            label.textAlignment = .Center
+            label.textAlignment = .center
             highScoreLabelsArray.append(label)
             addSubview(label)
         }

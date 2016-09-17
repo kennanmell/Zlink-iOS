@@ -46,22 +46,22 @@ class PlayPowerUpsView: UIView {
     }
     
     /** Shared initializer. */
-    private func initialize() {
-        backgroundButton.setImage(ImageManager.imageForName("powerup_background"), forState: .Normal)
+    fileprivate func initialize() {
+        backgroundButton.setImage(ImageManager.image(forName: "powerup_background"), for: UIControlState())
         backgroundButton.adjustsImageWhenHighlighted = false
         
         inventoryLabel.text = "0"
-        inventoryLabel.textAlignment = .Center
+        inventoryLabel.textAlignment = .center
         inventoryLabel.textColor = UIColor(red: 255.0 / 255.0, green: 210.0 / 255.0, blue: 0.0 / 255.0, alpha: 1.0)
 
-        magicWandButton.setImage(ImageManager.imageForName("powerup_magic_tile"), forState: .Normal)
-        magicWandButton.setImage(ImageManager.imageForName("powerup_magic_tile_highlighted"), forState: .Highlighted)
+        magicWandButton.setImage(ImageManager.image(forName: "powerup_magic_tile"), for: UIControlState())
+        magicWandButton.setImage(ImageManager.image(forName: "powerup_magic_tile_highlighted"), for: .highlighted)
         
-        boardRepairButton.setImage(ImageManager.imageForName("powerup_tile_repair"), forState: .Normal)
-        boardRepairButton.setImage(ImageManager.imageForName("powerup_tile_repair_highlighted"), forState: .Highlighted)
+        boardRepairButton.setImage(ImageManager.image(forName: "powerup_tile_repair"), for: UIControlState())
+        boardRepairButton.setImage(ImageManager.image(forName: "powerup_tile_repair_highlighted"), for: .highlighted)
         
-        shuffleButton.setImage(ImageManager.imageForName("powerup_shuffle"), forState: .Normal)
-        shuffleButton.setImage(ImageManager.imageForName("powerup_shuffle_highlighted"), forState: .Highlighted)
+        shuffleButton.setImage(ImageManager.image(forName: "powerup_shuffle"), for: UIControlState())
+        shuffleButton.setImage(ImageManager.image(forName: "powerup_shuffle_highlighted"), for: .highlighted)
         
         addSubview(backgroundButton)
         addSubview(inventoryLabel)

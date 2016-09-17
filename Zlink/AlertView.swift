@@ -51,13 +51,13 @@ class AlertView: UIView {
     }
     
     /** Shared initializer. */
-    private func initialize() {
+    fileprivate func initialize() {
         backgroundButton.adjustsImageWhenHighlighted = false
                 
         // Set up appearence.
         self.backgroundColor = UIColor(white: 0.2, alpha: 0.5)
         backgroundButton.backgroundColor = UIColor(white: 0.8, alpha: 1.0)
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             // iPad
             backgroundButton.layer.cornerRadius = 10
         } else {
@@ -67,13 +67,13 @@ class AlertView: UIView {
         backgroundButton.layer.masksToBounds = true
         addSubview(backgroundButton)
         
-        titleLabel.textAlignment = .Center
+        titleLabel.textAlignment = .center
         titleLabel.textColor = UIColor(white: 39.0 / 255.0, alpha: 1.0)
         titleLabel.adjustsFontSizeToFitWidth = true
         
-        messageLabel.textAlignment = .Center
+        messageLabel.textAlignment = .center
         messageLabel.textColor = UIColor(white: 39.0 / 255.0, alpha: 1.0)
-        messageLabel.lineBreakMode = .ByWordWrapping
+        messageLabel.lineBreakMode = .byWordWrapping
         messageLabel.numberOfLines = 0
         
         addSubview(titleLabel)
@@ -86,7 +86,7 @@ class AlertView: UIView {
         let buttonsAspectRatio: CGFloat = 1.672 / 0.4
         
         let blurViewHorizontalMargin: CGFloat
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             // iPad
             blurViewHorizontalMargin = self.frame.width * 0.25
         } else {

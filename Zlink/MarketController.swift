@@ -26,19 +26,19 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     static let maxAdsPerDay = 5
     
     /** The product identifier for all IAPs. */
-    private let productIdentifiers = Set(["com.megawattgaming.zlink.powerup_10", "com.megawattgaming.zlink.powerup_50", "com.megawattgaming.zlink.powerup_200"])
+    fileprivate let productIdentifiers = Set(["com.megawattgaming.zlink.powerup_10", "com.megawattgaming.zlink.powerup_50", "com.megawattgaming.zlink.powerup_200"])
     
     /** The SKProduct used to purchase 10 Power-Ups. */
-    private var powerups10: SKProduct?
+    fileprivate var powerups10: SKProduct?
     
     /** The SKProduct used to purchase 50 Power-Ups. */
-    private var powerups50: SKProduct?
+    fileprivate var powerups50: SKProduct?
     
     /** The SKProduct used to purchase 200 Power-Ups. */
-    private var powerups200: SKProduct?
+    fileprivate var powerups200: SKProduct?
     
     /** `true` if and only if a reward video is currently playing. */
-    private(set) var rewardedVideoPlaying = false
+    fileprivate(set) var rewardedVideoPlaying = false
     
     /** The current page of the info pager. */
     var currentPagerPage = 0 {
@@ -46,16 +46,16 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
             if oldValue != currentPagerPage {
                 let newImage: UIImageView
                 switch currentPagerPage {
-                case 0: newImage = UIImageView(image: ImageManager.imageForName("market_pager_1"))
-                case 1: newImage = UIImageView(image: ImageManager.imageForName("market_pager_2"))
-                case 2: newImage = UIImageView(image: ImageManager.imageForName("market_pager_3"))
-                case 3: newImage = UIImageView(image: ImageManager.imageForName("market_pager_4"))
-                case 4: newImage = UIImageView(image: ImageManager.imageForName("market_pager_5"))
-                case 5: newImage = UIImageView(image: ImageManager.imageForName("market_pager_6"))
+                case 0: newImage = UIImageView(image: ImageManager.image(forName: "market_pager_1"))
+                case 1: newImage = UIImageView(image: ImageManager.image(forName: "market_pager_2"))
+                case 2: newImage = UIImageView(image: ImageManager.image(forName: "market_pager_3"))
+                case 3: newImage = UIImageView(image: ImageManager.image(forName: "market_pager_4"))
+                case 4: newImage = UIImageView(image: ImageManager.image(forName: "market_pager_5"))
+                case 5: newImage = UIImageView(image: ImageManager.image(forName: "market_pager_6"))
                 default: fatalError("MarketView: Invalid Pager Page")
                 }
                 
-                UIView.transitionFromView(marketView.pagerView.subviews[0], toView: newImage, duration: 1.0, options: UIViewAnimationOptions.TransitionCrossDissolve, completion: nil)
+                UIView.transition(from: marketView.pagerView.subviews[0], to: newImage, duration: 1.0, options: UIViewAnimationOptions.transitionCrossDissolve, completion: nil)
                 
                 if currentPagerPage == 0 {
                     marketView.pagerView.addSubview(marketView.powerupsInventoryLabel)
@@ -68,12 +68,12 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     }
     
     /** `self.view` cast to `MarketView`. */
-    private var marketView: MarketView {
+    fileprivate var marketView: MarketView {
         // This cast will always succeed if the Storyboard is set up correctly.
         return (self.view as! MarketView)
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
@@ -92,22 +92,22 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
             request.delegate = self
             request.start()
         } else {
-            let alert = UIAlertController(title: "In-App Purchases Not Enabled", message: "Please enable In-App Purchases in Settings.", preferredStyle: UIAlertControllerStyle.Alert)
-            alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.Default, handler: { alertAction in
-                alert.dismissViewControllerAnimated(true, completion: nil)
+            let alert = UIAlertController(title: "In-App Purchases Not Enabled", message: "Please enable In-App Purchases in Settings.", preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "Settings", style: UIAlertActionStyle.default, handler: { alertAction in
+                alert.dismiss(animated: true, completion: nil)
                 
-                let url: NSURL? = NSURL(string: UIApplicationOpenSettingsURLString)
+                let url: URL? = URL(string: UIApplicationOpenSettingsURLString)
                 if url != nil {
-                    UIApplication.sharedApplication().openURL(url!)
+                    UIApplication.shared.openURL(url!)
                 }
                 
             }))
-            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.Default, handler: { alertAction in
-                alert.dismissViewControllerAnimated(true, completion: nil)
+            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: { alertAction in
+                alert.dismiss(animated: true, completion: nil)
             }))
-            mainController.presentViewController(alert, animated: true, completion: nil)
+            mainController.present(alert, animated: true, completion: nil)
         }
-        SKPaymentQueue.defaultQueue().addTransactionObserver(self)
+        SKPaymentQueue.default().add(self)
         
         // Add gesture recognizers.
         marketView.rightPagerButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MarketController.pageRight)))
@@ -118,12 +118,12 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
         marketView.powerups200Button.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MarketController.buy200Tapped)))
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         Chartboost.setDelegate(self)
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         Chartboost.setDelegate(nil)
     }
@@ -133,7 +133,7 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     
     /** Changes the pager page to be the one to the right of the current page (loops around if there is no right page). */
     func pageRight() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         if currentPagerPage == 5 {
             // There are only 6 pager pager pages.
             currentPagerPage = 0
@@ -144,7 +144,7 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     
     /** Changes the pager page to be the one to the left of the current page (loops around if there is no left page). */
     func pageLeft() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         if currentPagerPage == 0 {
             // There are only 6 pager pager pages.
             currentPagerPage = 5
@@ -156,12 +156,12 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     
     // MARK: ChartboostDelegate
     
-    func didDisplayRewardedVideo(location: String!) {
+    func didDisplayRewardedVideo(_ location: String!) {
         rewardedVideoPlaying = true
         MediaPlayer.isPlayingBackgroundMusic = false
     }
     
-    func didCompleteRewardedVideo(location: String!, withReward reward: Int32) {
+    func didCompleteRewardedVideo(_ location: String!, withReward reward: Int32) {
         rewardedVideoPlaying = false
         MediaPlayer.isPlayingBackgroundMusic = SavedData.musicOn
         SavedData.powerupsOwned += 1
@@ -176,23 +176,23 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     
     /** Plays an ad for the user, or notifies them if it was unable to play an ad. Called when the user taps the watch ad button. */
     func watchAdTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         if SavedData.adsWatchedToday >= MarketController.maxAdsPerDay {
             let alert = AlertView()
             alert.titleLabel.text = "Out of Ads!"
             alert.messageLabel.text =  "You can only watch " + String(MarketController.maxAdsPerDay) + " ads per day. Check back tomorrow!"
             alert.aspectRatio = 1 / 0.7
             
-            alert.bottomButton.setImage(ImageManager.imageForName("popup_close"), forState: .Normal)
-            alert.bottomButton.setImage(ImageManager.imageForName("popup_close_highlighted"), forState: .Highlighted)
+            alert.bottomButton.setImage(ImageManager.image(forName: "popup_close"), for: UIControlState())
+            alert.bottomButton.setImage(ImageManager.image(forName: "popup_close_highlighted"), for: .highlighted)
             
-            mainController.presentAlert(alert, topButtonAction: {}, bottomButtonAction: {
-                    MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+            mainController.presentAlert(alert: alert, topButtonAction: {}, bottomButtonAction: {
+                    MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
             })
         } else if !connectedToNetwork() {
             showNoConnectionAlert()
         } else {
-            MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
             Chartboost.showRewardedVideo(CBLocationIAPStore)
         }
     }
@@ -202,10 +202,10 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     
     /** Takes the user through the process of buying 10 Power-Ups. Called when the user taps the buy-10 button. */
     func buy10Tapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         if powerups10 != nil && connectedToNetwork() {
             let payment = SKPayment(product: powerups10!)
-            SKPaymentQueue.defaultQueue().addPayment(payment)
+            SKPaymentQueue.default().add(payment)
         } else {
             showNoConnectionAlert()
         }
@@ -213,10 +213,10 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     
     /** Takes the user through the process of buying 50 Power-Ups. Called when the user taps the buy-50 button. */
     func buy50Tapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         if powerups50 != nil && connectedToNetwork() {
             let payment = SKPayment(product: powerups50!)
-            SKPaymentQueue.defaultQueue().addPayment(payment)
+            SKPaymentQueue.default().add(payment)
         } else {
             showNoConnectionAlert()
         }
@@ -224,10 +224,10 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     
     /** Takes the user through the process of buying 200 Power-Ups. Called when the user taps the buy-200 button. */
     func buy200Tapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         if powerups200 != nil && connectedToNetwork() {
             let payment = SKPayment(product: powerups200!)
-            SKPaymentQueue.defaultQueue().addPayment(payment)
+            SKPaymentQueue.default().add(payment)
         } else {
             showNoConnectionAlert()
         }
@@ -236,7 +236,7 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     
     // MARK: SKProductsRequestDelegate
     
-    func productsRequest(request: SKProductsRequest, didReceiveResponse response: SKProductsResponse) {
+    func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
         
         var products = response.products
         var product: SKProduct?
@@ -269,12 +269,12 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     
     // MARK: SKPaymentTransactionObserver
     
-    func paymentQueue(queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
+    func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
         print("Received Payment Transaction Response from Apple");
         
         for transaction in transactions {
                 switch transaction.transactionState {
-                case .Purchased:
+                case .purchased:
                     print("Product Purchased");
                     
                     let powerupsToAdd: Int
@@ -285,7 +285,7 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
                     default: powerupsToAdd = 0
                     }
                     
-                    SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+                    SKPaymentQueue.default().finishTransaction(transaction)
                     SavedData.powerupsOwned += powerupsToAdd
                     SavedData.saveCurrentData()
                     marketView.powerupsInventoryLabel.text = String(SavedData.powerupsOwned)
@@ -293,9 +293,9 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
                         showRewardMessage("You got " + String(powerupsToAdd) + " Power-Ups!")
                     }
                     break;
-                case .Failed:
+                case .failed:
                     print("Purchased Failed");
-                    SKPaymentQueue.defaultQueue().finishTransaction(transaction)
+                    SKPaymentQueue.default().finishTransaction(transaction)
                     break;
                 default:
                     break;
@@ -308,17 +308,17 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     // MARK: Other Functions
 
     /** Displays an alert notifying the user that they may not be connected to the internet. */
-    private func showNoConnectionAlert() {
+    fileprivate func showNoConnectionAlert() {
         let alert = AlertView()
         alert.titleLabel.text = "Not Found"
         alert.messageLabel.text =  "Try checking your Internet connection."
         alert.aspectRatio = 1 / 0.7
         
-        alert.bottomButton.setImage(ImageManager.imageForName("popup_close"), forState: .Normal)
-        alert.bottomButton.setImage(ImageManager.imageForName("popup_close_highlighted"), forState: .Highlighted)
+        alert.bottomButton.setImage(ImageManager.image(forName: "popup_close"), for: UIControlState())
+        alert.bottomButton.setImage(ImageManager.image(forName: "popup_close_highlighted"), for: .highlighted)
         
-        mainController.presentAlert(alert, topButtonAction: {}, bottomButtonAction: {
-            MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        mainController.presentAlert(alert: alert, topButtonAction: {}, bottomButtonAction: {
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         })
     }
     
@@ -327,15 +327,15 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
      - parameters:
         - text: The text to display on the message. Should be only 1 line.
      */
-    private func showRewardMessage(text: String) {
+    fileprivate func showRewardMessage(_ text: String) {
         let rewardMessage = marketView.rewardLabel
         rewardMessage.text = text
-        UIView.animateWithDuration(0.5, delay: 0, options: .CurveEaseOut, animations: {
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
             rewardMessage.frame.origin.y -= rewardMessage.frame.height
             }, completion: { _ in
-                let time = dispatch_time(DISPATCH_TIME_NOW, Int64(2.0 * Double(NSEC_PER_SEC)))
-                dispatch_after(time, dispatch_get_main_queue(), {
-                    UIView.animateWithDuration(0.5, delay: 0, options: .CurveEaseIn, animations: {
+                let time = DispatchTime.now() + Double(Int64(2.0 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+                DispatchQueue.main.asyncAfter(deadline: time, execute: {
+                    UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
                         rewardMessage.frame.origin.y = self.view.frame.height + 1
                         }, completion: nil)
                 })
@@ -343,24 +343,28 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
     }
 
     /** Returns `true` if and only if the user has internet connection. */
-    private func connectedToNetwork() -> Bool {
+    fileprivate func connectedToNetwork() -> Bool {
+        
         var zeroAddress = sockaddr_in()
-        zeroAddress.sin_len = UInt8(sizeofValue(zeroAddress))
+        zeroAddress.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
         zeroAddress.sin_family = sa_family_t(AF_INET)
         
-        guard let defaultRouteReachability = withUnsafePointer(&zeroAddress, {
-            SCNetworkReachabilityCreateWithAddress(nil, UnsafePointer($0))
+        guard let defaultRouteReachability = withUnsafePointer(to: &zeroAddress, {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                SCNetworkReachabilityCreateWithAddress(nil, $0)
+            }
         }) else {
             return false
         }
         
-        var flags : SCNetworkReachabilityFlags = []
+        var flags: SCNetworkReachabilityFlags = []
         if !SCNetworkReachabilityGetFlags(defaultRouteReachability, &flags) {
             return false
         }
         
-        let isReachable = flags.contains(.Reachable)
-        let needsConnection = flags.contains(.ConnectionRequired)
+        let isReachable = flags.contains(.reachable)
+        let needsConnection = flags.contains(.connectionRequired)
+        
         return (isReachable && !needsConnection)
     }
     

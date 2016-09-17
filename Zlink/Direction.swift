@@ -15,13 +15,13 @@ import Foundation
  */
 enum Direction {
     
-    case Down, Up, Left, Right
+    case down, up, left, right
     
     
     // MARK: Properties
     
     /** Contains all possible types of `Direction`s. */
-    static let values = [Down, Up, Left, Right]
+    static let values = [down, up, left, right]
     
     
     // MARK: Functions
@@ -36,14 +36,14 @@ enum Direction {
     */
     func invert() -> Direction {
         switch (self) {
-        case .Up:
-            return Direction.Down;
-        case .Down:
-            return Direction.Up;
-        case .Right:
-            return Direction.Left;
-        case .Left:
-            return Direction.Right;
+        case .up:
+            return Direction.down;
+        case .down:
+            return Direction.up;
+        case .right:
+            return Direction.left;
+        case .left:
+            return Direction.right;
         }
     }
     

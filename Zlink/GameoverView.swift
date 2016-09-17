@@ -21,10 +21,10 @@ class GameoverView: UIView {
     let boardView = BoardView(length: PlayController.boardLength)
     
     /** Displays the page's title. */
-    let titleImage = UIImageView(image: ImageManager.imageForName("gameover_title"))
+    let titleImage = UIImageView(image: ImageManager.image(forName: "gameover_title"))
     
     /** Displays the background behind the score the user achieved. */
-    let scoreImage = UIImageView(image: ImageManager.imageForName("gameover_score"))
+    let scoreImage = UIImageView(image: ImageManager.image(forName: "gameover_score"))
     
     /** Used to start a new game. */
     let newGameButton = UIButton()
@@ -36,24 +36,24 @@ class GameoverView: UIView {
     let scoreLabel = UILabel()
     
     /** Displays a badge indicating the user just got a high score. */
-    let highScoreStickerImage = UIImageView(image: ImageManager.imageForName("gameover_sticker"))
+    let highScoreStickerImage = UIImageView(image: ImageManager.image(forName: "gameover_sticker"))
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         backgroundColor = ImageManager.appBackgroundColor
         
-        shareButton.setImage(ImageManager.imageForName("gameover_share"), forState: .Normal)
-        shareButton.setImage(ImageManager.imageForName("gameover_share_highlighted"), forState: .Highlighted)
+        shareButton.setImage(ImageManager.image(forName: "gameover_share"), for: UIControlState())
+        shareButton.setImage(ImageManager.image(forName: "gameover_share_highlighted"), for: .highlighted)
         
-        newGameButton.setImage(ImageManager.imageForName("new_button"), forState: .Normal)
-        newGameButton.setImage(ImageManager.imageForName("new_button_highlighted"), forState: .Highlighted)
+        newGameButton.setImage(ImageManager.image(forName: "new_button"), for: UIControlState())
+        newGameButton.setImage(ImageManager.image(forName: "new_button_highlighted"), for: .highlighted)
         
         scoreLabel.text = "000"
-        scoreLabel.textAlignment = .Center
+        scoreLabel.textAlignment = .center
         scoreLabel.textColor = UIColor(white: 39.0 / 255.0, alpha: 1.0)
         
         for tile in boardView.tileButtonArray {
-            tile.userInteractionEnabled = false
+            tile.isUserInteractionEnabled = false
         }
         
         addSubview(boardView)
@@ -85,7 +85,7 @@ class GameoverView: UIView {
         let horizontalMargin: CGFloat
         // The amount of the height of the screen (on each side, not including the top bar) to reserve for padding.
         let verticalMargin: CGFloat
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             // iPad
             horizontalMargin = self.frame.width * 0.22
             verticalMargin = self.frame.height * 0.03

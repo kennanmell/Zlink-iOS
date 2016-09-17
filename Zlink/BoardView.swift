@@ -18,16 +18,16 @@ class BoardView: UIView {
     // MARK: Properties
     
     /** The `UIButton`s representing `Tile`s on `self`. */
-    private(set) var tileButtonArray = Array<UIButton>()
+    fileprivate(set) var tileButtonArray = Array<UIButton>()
     
     /** The UIButtons representing the background of `Tile`s on `self`. */
-    private(set) var backgroundTileButtonArray = Array<UIButton>()
+    fileprivate(set) var backgroundTileButtonArray = Array<UIButton>()
     
     /** The number of subviews representing `Board` tiles that should appear in one row (or column) or `self`. */
     let tilesPerRow: Int
     
     /** View to hold and display `backgroundImage()`. */
-    private let backgroundImage = UIImageView(image: ImageManager.imageForName("board_background"))
+    fileprivate let backgroundImage = UIImageView(image: ImageManager.image(forName: "board_background"))
     
     
     // MARK: Initialization

@@ -61,13 +61,13 @@ class Stats:NSObject, NSCoding {
     static let currentScoreDate = "current"
     
     /** The number of `HighScore` elements stored in `self` (including the currently-tracked score). Read-only. */
-    private(set) var count: Int
+    fileprivate(set) var count: Int
     
     /** Stores all currently saved `HighScores` in `self`. Should always have a `count` of `self.count - 1` because `self.count` includes the current score. */
-    private var highScoreArray: Array<HighScore>
+    fileprivate var highScoreArray: Array<HighScore>
     
     /** The `HighScore` currently being tracked by `self`. Stored separately from `currentScore` to avoid representation exposure. */
-    private var storedCurrentScore: HighScore?
+    fileprivate var storedCurrentScore: HighScore?
     
     /** The `HighScore` currently being tracked by `self`. Mutating this value will not mutate the internal state of `self`. */
     var currentScore: HighScore? {
@@ -79,10 +79,10 @@ class Stats:NSObject, NSCoding {
     }
     
     /** The total number of games that `self` has tracked in its lifetime. */
-    private(set) var gamesPlayed: Int
+    fileprivate(set) var gamesPlayed: Int
     
     /** The total value of the scores in games that the `self` has tracked in its lifetime. */
-    private(set) var zlinksLinked: Int
+    fileprivate(set) var zlinksLinked: Int
     
     /** `true` if and only if `currentScore != nil`. */
     var isTrackingGame: Bool {
@@ -92,22 +92,22 @@ class Stats:NSObject, NSCoding {
     
     // MARK: NSCoding
     
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeInteger(count, forKey: ScoresEncodingKeys.countKey)
-        aCoder.encodeObject(storedCurrentScore, forKey: ScoresEncodingKeys.currentScoreKey)
-        aCoder.encodeInteger(gamesPlayed, forKey: ScoresEncodingKeys.gamesPlayedKey)
-        aCoder.encodeInteger(zlinksLinked, forKey: ScoresEncodingKeys.zlinksLinkedKey)
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(count, forKey: ScoresEncodingKeys.countKey)
+        aCoder.encode(storedCurrentScore, forKey: ScoresEncodingKeys.currentScoreKey)
+        aCoder.encode(gamesPlayed, forKey: ScoresEncodingKeys.gamesPlayedKey)
+        aCoder.encode(zlinksLinked, forKey: ScoresEncodingKeys.zlinksLinkedKey)
         for i in 0..<highScoreArray.count {
-            aCoder.encodeObject(highScoreArray[i])
+            aCoder.encode(highScoreArray[i])
         }
     }
     
     required convenience init?(coder aDecoder: NSCoder) {
         self.init()
-        self.count = aDecoder.decodeIntegerForKey(ScoresEncodingKeys.countKey)
-        self.storedCurrentScore = aDecoder.decodeObjectForKey(ScoresEncodingKeys.currentScoreKey) as? HighScore
-        self.gamesPlayed = aDecoder.decodeIntegerForKey(ScoresEncodingKeys.gamesPlayedKey)
-        self.zlinksLinked = aDecoder.decodeIntegerForKey(ScoresEncodingKeys.zlinksLinkedKey)
+        self.count = aDecoder.decodeInteger(forKey: ScoresEncodingKeys.countKey)
+        self.storedCurrentScore = aDecoder.decodeObject(forKey: ScoresEncodingKeys.currentScoreKey) as? HighScore
+        self.gamesPlayed = aDecoder.decodeInteger(forKey: ScoresEncodingKeys.gamesPlayedKey)
+        self.zlinksLinked = aDecoder.decodeInteger(forKey: ScoresEncodingKeys.zlinksLinkedKey)
         
         var highScore = aDecoder.decodeObject()
         while highScore is HighScore {
@@ -184,7 +184,7 @@ class Stats:NSObject, NSCoding {
         
         storedCurrentScore!.date = Calendar.getCurrentDate()
         if insertLocation < count {
-            highScoreArray.insert(storedCurrentScore!, atIndex: insertLocation)
+            highScoreArray.insert(storedCurrentScore!, at: insertLocation)
         } else if count < Stats.maxCount {
             highScoreArray.append(storedCurrentScore!)
         }

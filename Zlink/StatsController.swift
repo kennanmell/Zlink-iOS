@@ -21,14 +21,14 @@ class StatsController: UIViewController {
     static let ID = "Stats"
     
     /** The image to share. Stored as a property so the share button doesn't appear pressed when the image is shared. */
-    private var screenshot: UIImage?
+    fileprivate var screenshot: UIImage?
     
     /** The high score currently selected (to see the date), or `nil` if no high score is currently selected. */
     var selectedHighScore: Int? = nil {
         willSet {
             if selectedHighScore != nil {
                 // Deselect the currently selected high score.
-                statsView.highScoreImagesArray[selectedHighScore!].setImage(UIImage(named: "scores_score_background"), forState: .Normal)
+                statsView.highScoreImagesArray[selectedHighScore!].setImage(UIImage(named: "scores_score_background"), for: UIControlState())
                 statsView.highScoreLabelsArray[selectedHighScore!].text = String(selectedHighScore! + 1) + ". " + String(SavedData.stats[selectedHighScore!].score)
             }
         }
@@ -39,19 +39,19 @@ class StatsController: UIViewController {
                 }
                 
                 // Select the newly selected high score.
-                statsView.highScoreImagesArray[selectedHighScore!].setImage(UIImage(named: "scores_score_background_highlighted"), forState: .Normal)
+                statsView.highScoreImagesArray[selectedHighScore!].setImage(UIImage(named: "scores_score_background_highlighted"), for: UIControlState())
                 statsView.highScoreLabelsArray[selectedHighScore!].text = SavedData.stats[selectedHighScore!].date
             }
         }
     }
     
     /** `self.view` cast to `StatsView`. */
-    private var statsView: StatsView {
+    fileprivate var statsView: StatsView {
         // This cast will always succeed if the Storyboard is set up correctly.
         return (self.view as! StatsView)
     }
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
@@ -66,7 +66,7 @@ class StatsController: UIViewController {
         statsView.resetDataButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(StatsController.resetDataTapped)))
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         // Update displayed data.
@@ -87,14 +87,14 @@ class StatsController: UIViewController {
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if screenshot == nil {
             // Get screenshot to share.
-            let layer = UIApplication.sharedApplication().keyWindow!.layer
-            let scale = UIScreen.mainScreen().scale
+            let layer = UIApplication.shared.keyWindow!.layer
+            let scale = UIScreen.main.scale
             UIGraphicsBeginImageContextWithOptions(layer.frame.size, false, scale);
-            layer.renderInContext(UIGraphicsGetCurrentContext()!)
+            layer.render(in: UIGraphicsGetCurrentContext()!)
             screenshot = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
         }
@@ -108,8 +108,8 @@ class StatsController: UIViewController {
      - parameters:
         - recognizer: The `UITapGestureRecognizer` whose gesture resulted in this function being called. Contains the information necessary to determine which score to select.
      */
-    func highScoreTapped(recognizer: UITapGestureRecognizer) {
-        let index = statsView.highScoreImagesArray.indexOf(recognizer.view as! UIButton)!
+    func highScoreTapped(_ recognizer: UITapGestureRecognizer) {
+        let index = statsView.highScoreImagesArray.index(of: recognizer.view as! UIButton)!
         if selectedHighScore == index {
             selectedHighScore = nil
         } else {
@@ -122,7 +122,7 @@ class StatsController: UIViewController {
     
     /** Clears all saved user data and takes the user to the home page. Called when the user taps the reset data button. */
     func resetDataTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         self.selectedHighScore = nil
         
         let alert = AlertView()
@@ -130,18 +130,18 @@ class StatsController: UIViewController {
         alert.messageLabel.text =  "You will lose all scores, preferences, in-progress games, and other saved data. Power-Up Inventory and Game Center data will not be lost."
         alert.aspectRatio = 1 / 1.1
         
-        alert.topButton.setImage(ImageManager.imageForName("popup_reset"), forState: .Normal)
-        alert.topButton.setImage(ImageManager.imageForName("popup_reset_highlighted"), forState: .Highlighted)
+        alert.topButton.setImage(ImageManager.image(forName: "popup_reset"), for: UIControlState())
+        alert.topButton.setImage(ImageManager.image(forName: "popup_reset_highlighted"), for: .highlighted)
         
-        alert.bottomButton.setImage(ImageManager.imageForName("popup_cancel"), forState: .Normal)
-        alert.bottomButton.setImage(ImageManager.imageForName("popup_cancel_highlighted"), forState: .Highlighted)
+        alert.bottomButton.setImage(ImageManager.image(forName: "popup_cancel"), for: UIControlState())
+        alert.bottomButton.setImage(ImageManager.image(forName: "popup_cancel_highlighted"), for: .highlighted)
         
-        mainController.presentAlert(alert, topButtonAction: {
-            MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        mainController.presentAlert(alert: alert, topButtonAction: {
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
             SavedData.saveDefaultData()
-            self.mainController.setViewController(HomeController.ID)
+            self.mainController.setViewController(id: HomeController.ID)
         }, bottomButtonAction: {
-            MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+            MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         })
     }
     
@@ -150,16 +150,16 @@ class StatsController: UIViewController {
     
     /** Shares a screenshot of this page. Called when the user clicks the share button. */
     func shareTapped() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
         self.selectedHighScore = nil
         
         // Set up and open Apple's default sharing feature.
         let text = "Check out my stats in Zlink!"
         
-        var objectsToShare: Array<NSObject> = [text]
+        var objectsToShare: Array<NSObject> = [text as NSObject]
         
-        if let website = NSURL(string: "http://www.megawattgaming.com/") {
-            objectsToShare.append(website)
+        if let website = URL(string: "http://www.megawattgaming.com/") {
+            objectsToShare.append(website as NSObject)
         }
         
         if screenshot != nil {
@@ -169,7 +169,7 @@ class StatsController: UIViewController {
         let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
         
         let popoverView = UIView()
-        if activityVC.respondsToSelector(Selector("popoverPresentationController")) {
+        if activityVC.responds(to: #selector(getter: UIViewController.popoverPresentationController)) {
             // iPad
             let shareButton = (self.view as! StatsView).shareButton
             popoverView.frame = CGRect(x: shareButton.frame.origin.x + shareButton.frame.width / 2, y: shareButton.frame.origin.y - view.frame.height * 0.01, width: 1, height: 1)
@@ -177,7 +177,7 @@ class StatsController: UIViewController {
             activityVC.popoverPresentationController?.sourceView = popoverView
         }
         
-        self.navigationController!.presentViewController(activityVC, animated: true, completion: {
+        self.navigationController!.present(activityVC, animated: true, completion: {
             popoverView.removeFromSuperview()
         })
     }

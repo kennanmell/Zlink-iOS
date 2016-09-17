@@ -27,7 +27,7 @@ class TutorialSceneView: UIView {
     let bottomTextLabel = UILabel()
     
     /** Displays the finger that moves around on the page. */
-    let fingerImage = UIImageView(image: ImageManager.imageForName("tutorial_finger"))
+    let fingerImage = UIImageView(image: ImageManager.image(forName: "tutorial_finger"))
     
     
     // MARK: Initialization
@@ -43,22 +43,22 @@ class TutorialSceneView: UIView {
     }
     
     /** Shared initializer. */
-    private func initialize() {
+    fileprivate func initialize() {
         backgroundColor = ImageManager.appBackgroundColor
         
-        topTextLabel.lineBreakMode = .ByWordWrapping
+        topTextLabel.lineBreakMode = .byWordWrapping
         topTextLabel.adjustsFontSizeToFitWidth = true
         topTextLabel.numberOfLines = 0
-        topTextLabel.textAlignment = .Center
+        topTextLabel.textAlignment = .center
         
-        bottomTextLabel.lineBreakMode = .ByWordWrapping
+        bottomTextLabel.lineBreakMode = .byWordWrapping
         bottomTextLabel.adjustsFontSizeToFitWidth = true
         bottomTextLabel.numberOfLines = 0
-        bottomTextLabel.textAlignment = .Center
+        bottomTextLabel.textAlignment = .center
         bottomTextLabel.alpha = 0.0
         
         for tileImage in boardView.tileButtonArray {
-            tileImage.userInteractionEnabled = false
+            tileImage.isUserInteractionEnabled = false
         }
 
         addSubview(boardView)
@@ -81,7 +81,7 @@ class TutorialSceneView: UIView {
         let boardViewDimension: CGFloat
         // The size of the text for the top and bottom labels.
         let textSize: CGFloat
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
+        if UIDevice.current.userInterfaceIdiom == .pad {
             // iPad
             boardViewDimension = self.frame.width * 0.67
             textSize = self.frame.width / 18

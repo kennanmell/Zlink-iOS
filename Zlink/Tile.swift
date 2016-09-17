@@ -16,28 +16,28 @@ import Foundation
 enum Tile {
     
     /** A Zlink `Tile`. */
-    case Zlink1, Zlink2, Zlink3, Zlink4, Zlink5, Zlink6, Zlink7, Zlink8, Zlink9
+    case zlink1, zlink2, zlink3, zlink4, zlink5, zlink6, zlink7, zlink8, zlink9
     /** A number `Tile`. */
-    case Number1, Number2, Number3
+    case number1, number2, number3
     /** An empty (white) `Tile`. */
-    case Empty
+    case empty
     /** A broken (black/black hole) `Tile`. */
-    case Broken
+    case broken
     /** A full (gold) `Tile`. */
-    case Full0, Full1, Full2, Full3, Full4, Full5, Full6, Full7, Full8
+    case full0, full1, full2, full3, full4, full5, full6, full7, full8
     
     
     // MARK: Properties
     
     /** Contains all possible types of `Tile`s. */
-    static let values = [Zlink1, Zlink2, Zlink3, Zlink4, Zlink5, Zlink6, Zlink7, Zlink8, Zlink9, Number1, Number2, Number3, Empty, Full0, Full1, Full2, Full3, Full4, Full5, Full6, Full7, Full8, Broken]
+    static let values = [zlink1, zlink2, zlink3, zlink4, zlink5, zlink6, zlink7, zlink8, zlink9, number1, number2, number3, empty, full0, full1, full2, full3, full4, full5, full6, full7, full8, broken]
     
     /**`1` for `.Number1`, `2` for `.Number2`, `3` for `.Number3`, and `nil` for all other types of `Tile`. */
     var intValue: Int? {
         switch (self) {
-        case .Number1: return 1
-        case .Number2: return 2
-        case .Number3: return 3
+        case .number1: return 1
+        case .number2: return 2
+        case .number3: return 3
         default: return nil
         }
     }
@@ -45,9 +45,9 @@ enum Tile {
     /** `true` if and only if `self` is `.Number1`, `.Number2`, or `.Number3`. */
     var isNumber: Bool {
         switch (self) {
-        case .Number1: return true
-        case .Number2: return true
-        case .Number3: return true
+        case .number1: return true
+        case .number2: return true
+        case .number3: return true
         default: return false
         }
     }
@@ -55,15 +55,15 @@ enum Tile {
     /** `true` if and only if `self` is one of `Zlink1` - `Zlink9`. */
     var isZlink: Bool {
         switch (self) {
-        case .Zlink1: return true
-        case .Zlink2: return true
-        case .Zlink3: return true
-        case .Zlink4: return true
-        case .Zlink5: return true
-        case .Zlink6: return true
-        case .Zlink7: return true
-        case .Zlink8: return true
-        case .Zlink9: return true
+        case .zlink1: return true
+        case .zlink2: return true
+        case .zlink3: return true
+        case .zlink4: return true
+        case .zlink5: return true
+        case .zlink6: return true
+        case .zlink7: return true
+        case .zlink8: return true
+        case .zlink9: return true
         default: return false
         }
     }
@@ -71,15 +71,15 @@ enum Tile {
     /** `true` if and only if `self` is one of `Full0` - `Full10`. */
     var isFull: Bool {
         switch self {
-        case .Full0: return true
-        case .Full1: return true
-        case .Full2: return true
-        case .Full3: return true
-        case .Full4: return true
-        case .Full5: return true
-        case .Full6: return true
-        case .Full7: return true
-        case .Full8: return true
+        case .full0: return true
+        case .full1: return true
+        case .full2: return true
+        case .full3: return true
+        case .full4: return true
+        case .full5: return true
+        case .full6: return true
+        case .full7: return true
+        case .full8: return true
         default: return false
         }
     }

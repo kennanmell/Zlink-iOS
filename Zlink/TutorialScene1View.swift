@@ -24,7 +24,7 @@ class TutorialScene1View: UIView {
     let bottomTextLabel = UILabel()
     
     /** Displays the image introducing Zlinks. */
-    let zlinksImage = UIImageView(image: ImageManager.imageForName("tutorial_zlinks_image"))
+    let zlinksImage = UIImageView(image: ImageManager.image(forName: "tutorial_zlinks_image"))
 
     
     // MARK: Initialization
@@ -40,16 +40,16 @@ class TutorialScene1View: UIView {
     }
     
     /** Shared initializer. */
-    private func initialize() {
+    fileprivate func initialize() {
         backgroundColor = ImageManager.appBackgroundColor
         
-        topTextLabel.lineBreakMode = .ByWordWrapping
+        topTextLabel.lineBreakMode = .byWordWrapping
         topTextLabel.numberOfLines = 0
-        topTextLabel.textAlignment = .Center
+        topTextLabel.textAlignment = .center
         topTextLabel.text = "These are Zlinks..."
-        bottomTextLabel.lineBreakMode = .ByWordWrapping
+        bottomTextLabel.lineBreakMode = .byWordWrapping
         bottomTextLabel.numberOfLines = 0
-        bottomTextLabel.textAlignment = .Center
+        bottomTextLabel.textAlignment = .center
         bottomTextLabel.text = "Your job is to make gold paths linking them!"
         
         addSubview(topTextLabel)

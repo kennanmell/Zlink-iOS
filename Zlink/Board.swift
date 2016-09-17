@@ -44,7 +44,7 @@ class Board: NSObject, NSCoding {
             return tileArray[location]
         }
         set(type) {
-            boardListener?.tileSet(location, before: tileArray[location], after: type)
+            boardListener?.tileSet(location: location, before: tileArray[location], after: type)
             tileArray[location] = type
         }
     }
@@ -59,10 +59,10 @@ class Board: NSObject, NSCoding {
     let totalTiles: Int
     
     /** Stores the `Tile` type at each location of `self`. */
-    private var tileArray: Array<Tile>
+    fileprivate var tileArray: Array<Tile>
     
     /** The number of Zlinks that have been removed from `self` via `removeConnections` since `self` was last cleared or initialized. */
-    private(set) var score: Int
+    fileprivate(set) var score: Int
     
     /**
      `true` if and only if `!self.canMoveTile(i, inDirection: d)` for all `0 <= i < totalTiles` and all `d`.
@@ -70,7 +70,7 @@ class Board: NSObject, NSCoding {
     var isGameOver: Bool {
         for i in 0..<totalTiles {
             for direction in Direction.values {
-                if canMoveTile(i, inDirection: direction) {
+                if canMoveTile(location: i, inDirection: direction) {
                     return false
                 }
             }
@@ -87,7 +87,7 @@ class Board: NSObject, NSCoding {
     /** `true` if and only if `self[i] == .Broken` for some `i` such that `0 <= i < totalTiles`. */
     var isBroken: Bool {
         for tile in tileArray {
-            if tile == .Broken {
+            if tile == .broken {
                 return true
             }
         }
@@ -124,7 +124,7 @@ class Board: NSObject, NSCoding {
         self.totalTiles = rowLength * rowLength
         
         self.score = 0
-        self.tileArray = Array<Tile>(count: totalTiles, repeatedValue: .Empty)
+        self.tileArray = Array<Tile>(repeating: .empty, count: totalTiles)
     }
     
     /**
@@ -145,50 +145,50 @@ class Board: NSObject, NSCoding {
     
     // MARK: NSCoding
     
-    func encodeWithCoder(aCoder: NSCoder) {
+    func encode(with aCoder: NSCoder) {
         // Store properties.
-        aCoder.encodeInteger(score, forKey: BoardEncodingKeys.scoreKey)
-        aCoder.encodeInteger(rowLength, forKey: BoardEncodingKeys.rowLengthKey)
+        aCoder.encode(score, forKey: BoardEncodingKeys.scoreKey)
+        aCoder.encode(rowLength, forKey: BoardEncodingKeys.rowLengthKey)
         
         // Store each location's current `Tile` type.
         for i in 0..<totalTiles {
-            aCoder.encodeObject(String(tileArray[i]))
+            aCoder.encode(String(describing: tileArray[i]))
         }
     }
     
     required convenience init?(coder aDecoder: NSCoder) {
         // Initialize with stored row length.
-        self.init(rowLength: aDecoder.decodeIntegerForKey(BoardEncodingKeys.rowLengthKey))
+        self.init(rowLength: aDecoder.decodeInteger(forKey: BoardEncodingKeys.rowLengthKey))
         
         // Set `score` to stored score.
-        self.score = aDecoder.decodeIntegerForKey(BoardEncodingKeys.scoreKey)
+        self.score = aDecoder.decodeInteger(forKey: BoardEncodingKeys.scoreKey)
         
         // Set each location's `Tile` type.
         for i in 0..<totalTiles {
             switch aDecoder.decodeObject() as! String {
-            case String(Tile.Empty): tileArray[i] = .Empty
-            case String(Tile.Full0): tileArray[i] = .Full0
-            case String(Tile.Full1): tileArray[i] = .Full1
-            case String(Tile.Full2): tileArray[i] = .Full2
-            case String(Tile.Full3): tileArray[i] = .Full3
-            case String(Tile.Full4): tileArray[i] = .Full4
-            case String(Tile.Full5): tileArray[i] = .Full5
-            case String(Tile.Full6): tileArray[i] = .Full6
-            case String(Tile.Full7): tileArray[i] = .Full7
-            case String(Tile.Full8): tileArray[i] = .Full8
-            case String(Tile.Broken): tileArray[i] = .Broken
-            case String(Tile.Number1): tileArray[i] = .Number1
-            case String(Tile.Number2): tileArray[i] = .Number2
-            case String(Tile.Number3): tileArray[i] = .Number3
-            case String(Tile.Zlink1): tileArray[i] = .Zlink1
-            case String(Tile.Zlink2): tileArray[i] = .Zlink2
-            case String(Tile.Zlink3): tileArray[i] = .Zlink3
-            case String(Tile.Zlink4): tileArray[i] = .Zlink4
-            case String(Tile.Zlink5): tileArray[i] = .Zlink5
-            case String(Tile.Zlink6): tileArray[i] = .Zlink6
-            case String(Tile.Zlink7): tileArray[i] = .Zlink7
-            case String(Tile.Zlink8): tileArray[i] = .Zlink8
-            case String(Tile.Zlink9): tileArray[i] = .Zlink9
+            case String(describing: Tile.empty): tileArray[i] = .empty
+            case String(describing: Tile.full0): tileArray[i] = .full0
+            case String(describing: Tile.full1): tileArray[i] = .full1
+            case String(describing: Tile.full2): tileArray[i] = .full2
+            case String(describing: Tile.full3): tileArray[i] = .full3
+            case String(describing: Tile.full4): tileArray[i] = .full4
+            case String(describing: Tile.full5): tileArray[i] = .full5
+            case String(describing: Tile.full6): tileArray[i] = .full6
+            case String(describing: Tile.full7): tileArray[i] = .full7
+            case String(describing: Tile.full8): tileArray[i] = .full8
+            case String(describing: Tile.broken): tileArray[i] = .broken
+            case String(describing: Tile.number1): tileArray[i] = .number1
+            case String(describing: Tile.number2): tileArray[i] = .number2
+            case String(describing: Tile.number3): tileArray[i] = .number3
+            case String(describing: Tile.zlink1): tileArray[i] = .zlink1
+            case String(describing: Tile.zlink2): tileArray[i] = .zlink2
+            case String(describing: Tile.zlink3): tileArray[i] = .zlink3
+            case String(describing: Tile.zlink4): tileArray[i] = .zlink4
+            case String(describing: Tile.zlink5): tileArray[i] = .zlink5
+            case String(describing: Tile.zlink6): tileArray[i] = .zlink6
+            case String(describing: Tile.zlink7): tileArray[i] = .zlink7
+            case String(describing: Tile.zlink8): tileArray[i] = .zlink8
+            case String(describing: Tile.zlink9): tileArray[i] = .zlink9
             default: fatalError("Unable to initialize with NSCoding.")
             }
         }
@@ -215,19 +215,19 @@ class Board: NSObject, NSCoding {
             fatalError("Board index out of range.")
         }
         
-        if (!canMoveTile(location, inDirection: direction)) {
+        if (!canMoveTile(location: location, inDirection: direction)) {
             return false;
         }
         let steps = tileArray[location].intValue!
         var locationX = location;
         for _ in 1...steps {
-            locationX = shiftFromLocation(locationX, inDirection: direction)!;
-            boardListener?.tileMoved(locationX, before: tileArray[locationX], after: .Full8)
-            tileArray[locationX] = .Full8
+            locationX = shift(location: locationX, inDirection: direction)!;
+            boardListener?.tileMoved(location: locationX, before: tileArray[locationX], after: .full8)
+            tileArray[locationX] = .full8
         }
         
-        boardListener?.tileMoved(location, before: tileArray[location], after: .Empty)
-        tileArray[location] = Tile.Empty;
+        boardListener?.tileMoved(location: location, before: tileArray[location], after: .empty)
+        tileArray[location] = Tile.empty;
         
         return true;
     }
@@ -241,9 +241,9 @@ class Board: NSObject, NSCoding {
      */
     func magicWand() {
         for i in 0..<totalTiles {
-            if tileArray[i] == .Empty {
-                boardListener?.tileMagicWanded(i, before: tileArray[i], after: .Full7)
-                tileArray[i] = .Full7
+            if tileArray[i] == .empty {
+                boardListener?.tileMagicWanded(location: i, before: tileArray[i], after: .full7)
+                tileArray[i] = .full7
             }
         }
     }
@@ -257,9 +257,9 @@ class Board: NSObject, NSCoding {
      */
     func repairBoard() {
         for i in 0..<totalTiles {
-            if tileArray[i] == .Broken {
-                boardListener?.tileRepaired(i, before: .Broken, after: .Empty)
-                tileArray[i] = .Empty
+            if tileArray[i] == .broken {
+                boardListener?.tileRepaired(location: i, before: .broken, after: .empty)
+                tileArray[i] = .empty
             }
         }
     }
@@ -277,8 +277,8 @@ class Board: NSObject, NSCoding {
         scoreListener?.onScoreCleared()
         score = 0
         for i in 0..<totalTiles {
-            boardListener?.tileCleared(i, before: tileArray[i], after: .Empty)
-            tileArray[i] = .Empty
+            boardListener?.tileCleared(location: i, before: tileArray[i], after: .empty)
+            tileArray[i] = .empty
         }
     }
     
@@ -291,20 +291,20 @@ class Board: NSObject, NSCoding {
         for i in 0..<totalTiles {
             let newType: Tile?
             switch tileArray[i] {
-            case .Full0: newType = .Broken
-            case .Full1: newType = .Full0
-            case .Full2: newType = .Full1
-            case .Full3: newType = .Full2
-            case .Full4: newType = .Full3
-            case .Full5: newType = .Full4
-            case .Full6: newType = .Full5
-            case .Full7: newType = .Full6
-            case .Full8: newType = .Full7
+            case .full0: newType = .broken
+            case .full1: newType = .full0
+            case .full2: newType = .full1
+            case .full3: newType = .full2
+            case .full4: newType = .full3
+            case .full5: newType = .full4
+            case .full6: newType = .full5
+            case .full7: newType = .full6
+            case .full8: newType = .full7
             default: newType = nil
             }
             
             if newType != nil {
-                boardListener?.tileTimeStepped(i, before: tileArray[i], after: newType!)
+                boardListener?.tileTimeStepped(location: i, before: tileArray[i], after: newType!)
                 tileArray[i] = newType!
             }
         }
@@ -325,7 +325,7 @@ class Board: NSObject, NSCoding {
             return false;
         }
         
-        removeLinksHelper(location!)
+        removeLinksHelper(location: location!)
         return true
     }
     
@@ -334,18 +334,18 @@ class Board: NSObject, NSCoding {
      
      - requires: location is at least 0 and less than `self.totalTiles`.
      */
-    private func removeLinksHelper(location: Int!) {
+    fileprivate func removeLinksHelper(location: Int!) {
         if location != nil && tileArray[location].isConnectable {
             if tileArray[location].isZlink {
                 score += 1
-                scoreListener?.onScoreIncremented(score)
+                scoreListener?.onScoreIncremented(newScore: score)
             }
 
-            boardListener?.tileLinked(location, before: tileArray[location], after: .Empty)
-            tileArray[location] = .Empty;
+            boardListener?.tileLinked(location: location, before: tileArray[location], after: .empty)
+            tileArray[location] = .empty;
             
             for direction in Direction.values {
-                removeLinksHelper(shiftFromLocation(location, inDirection: direction));
+                removeLinksHelper(location: shift(location: location, inDirection: direction));
             }
         }
     }
@@ -355,9 +355,9 @@ class Board: NSObject, NSCoding {
      
      - returns: If there are links on `self`, returns a location on `self` that is part of a link on `self`. Returns `nil` if there are no links.
      */
-    private func checkLinks() -> Int? {
+    fileprivate func checkLinks() -> Int? {
         for i in 0..<totalTiles {
-            if (tileArray[i].isZlink && checkLinksHelper(i, previous: Set())) {
+            if (tileArray[i].isZlink && checkLinksHelper(location: i, previous: Set())) {
                 return i;
             }
         }
@@ -365,12 +365,12 @@ class Board: NSObject, NSCoding {
     }
     
     /** Recursive helper function for `checkConnections()`. */
-    private func checkLinksHelper(location: Int, previous: Set<Int>) -> Bool {
+    fileprivate func checkLinksHelper(location: Int, previous: Set<Int>) -> Bool {
         var current = previous
         current.insert(location)
         for direction in Direction.values {
-            let newLocation: Int! = shiftFromLocation(location, inDirection: direction)
-            if newLocation != nil && !previous.contains(newLocation) && (tileArray[newLocation].isZlink || (tileArray[newLocation].isConnectable && checkLinksHelper(newLocation, previous: current))) {
+            let newLocation: Int! = shift(location: location, inDirection: direction)
+            if newLocation != nil && !previous.contains(newLocation) && (tileArray[newLocation].isZlink || (tileArray[newLocation].isConnectable && checkLinksHelper(location: newLocation, previous: current))) {
                 return true;
             }
         }
@@ -398,22 +398,22 @@ class Board: NSObject, NSCoding {
             return false;
         }
         
-        let l1 = shiftFromLocation(location, inDirection: direction);
-        if l1 == nil || tileArray[l1!] != .Empty {
+        let l1 = shift(location: location, inDirection: direction);
+        if l1 == nil || tileArray[l1!] != .empty {
             return false
         } else if steps == 1 {
             return true
         }
         
-        let l2 = shiftFromLocation(l1!, inDirection: direction);
-        if l2 == nil || tileArray[l2!] != .Empty {
+        let l2 = shift(location: l1!, inDirection: direction);
+        if l2 == nil || tileArray[l2!] != .empty {
             return false
         } else if steps == 2 {
             return true
         }
         
-        let l3 = shiftFromLocation(l2!, inDirection: direction);
-        if l3 == nil || tileArray[l3!] != .Empty {
+        let l3 = shift(location: l2!, inDirection: direction);
+        if l3 == nil || tileArray[l3!] != .empty {
             return false
         } else {
             // steps == 3
@@ -432,28 +432,28 @@ class Board: NSObject, NSCoding {
      
      - requires: `location` is at least `0` and less than `self.totalTiles`.
      */
-    func shiftFromLocation(location: Int, inDirection direction: Direction) -> Int? {
+    func shift(location: Int, inDirection direction: Direction) -> Int? {
         if location < 0 || location >= totalTiles {
             fatalError("Location out of bounds.")
         }
         
         switch direction {
-        case .Up:
+        case .up:
             if (location < rowLength) {
                 return nil
             }
             return location - rowLength;
-        case .Down:
+        case .down:
             if (location + rowLength >= totalTiles) {
                 return nil
             }
             return location + rowLength;
-        case .Left:
+        case .left:
             if (location % rowLength == 0) {
                 return nil
             }
             return location - 1;
-        case .Right:
+        case .right:
             if (location % rowLength == rowLength - 1) {
                 return nil
             }
@@ -496,27 +496,27 @@ protocol BoardListener {
 extension BoardListener {
     
     func tileMoved(location: Int, before: Tile, after: Tile) {
-        tileSet(location, before: before, after: after)
+        tileSet(location: location, before: before, after: after)
     }
     
     func tileLinked(location: Int, before: Tile, after: Tile) {
-        tileSet(location, before: before, after: after)
+        tileSet(location: location, before: before, after: after)
     }
     
     func tileTimeStepped(location: Int, before: Tile, after: Tile) {
-        tileSet(location, before: before, after: after)
+        tileSet(location: location, before: before, after: after)
     }
     
     func tileCleared(location: Int, before: Tile, after: Tile) {
-        tileSet(location, before: before, after: after)
+        tileSet(location: location, before: before, after: after)
     }
     
     func tileMagicWanded(location: Int, before: Tile, after: Tile) {
-        tileSet(location, before: before, after: after)
+        tileSet(location: location, before: before, after: after)
     }
     
     func tileRepaired(location: Int, before: Tile, after: Tile) {
-        tileSet(location, before: before, after: after)
+        tileSet(location: location, before: before, after: after)
     }
     
 }

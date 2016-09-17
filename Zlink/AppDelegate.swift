@@ -75,7 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // MARK: Functions
     
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         // Save default data if the app has never opened before.
         if SavedData.dateOfFirstOpen == nil {
@@ -83,12 +83,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
                 
         // Prepare Chartboost ads.
-        Chartboost.startWithAppId("56e3c2882fdf346cf3cd353c", appSignature: "16a421d64ada386cff627f98a68171309e276d96", delegate: nil)
+        Chartboost.start(withAppId: "56e3c2882fdf346cf3cd353c", appSignature: "16a421d64ada386cff627f98a68171309e276d96", delegate: nil)
         
         return true
     }
 
-    func applicationWillResignActive(application: UIApplication) {
+    func applicationWillResignActive(_ application: UIApplication) {
         // Save user data.
         SavedData.saveCurrentData()
         
@@ -101,14 +101,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         let currentViewController = getCurrentViewController()
 
         // Start background music if player has SFX on and no other sounds are playing (including in-app video ads).
         let sess = AVAudioSession.sharedInstance()
-        if sess.otherAudioPlaying {
-            _ = try? sess.setCategory(AVAudioSessionCategoryAmbient, withOptions: .MixWithOthers)
-            _ = try? sess.setActive(true, withOptions: [])
+        if sess.isOtherAudioPlaying {
+            _ = try? sess.setCategory(AVAudioSessionCategoryAmbient, with: .mixWithOthers)
+            _ = try? sess.setActive(true, with: [])
         } else if SavedData.musicOn && (!(currentViewController is MarketController) || !(currentViewController as! MarketController).rewardedVideoPlaying) {
             MediaPlayer.isPlayingBackgroundMusic = true
         }
@@ -116,15 +116,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Authenticate game center if necessary.
         if !gameCenterAuthenticated {
             let localPlayer = GKLocalPlayer.localPlayer()
-            localPlayer.authenticateHandler = { (viewController : UIViewController?, error : NSError?) -> Void in
-                if localPlayer.authenticated {
+            localPlayer.authenticateHandler = { (viewController : UIViewController?, error : Error?) -> Void in
+                if localPlayer.isAuthenticated {
                     self.gameCenterAuthenticated = true
                 } else {
                     print("not able to authenticate fail")
                     self.gameCenterAuthenticated = false
                     
                     if (error != nil) {
-                        print("\(error!.description)")
+                        print("\(error!.localizedDescription)")
                     } else {
                         print("error is nil")
                     }
@@ -149,42 +149,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             alert.messageLabel.text =  "You earned one free Power-Up for playing Zlink today!\n\nVisit the Market for more FREE Power-Ups?"
             alert.aspectRatio = 1 / 1.12
             
-            alert.topButton.setImage(ImageManager.imageForName("popup_market"), forState: .Normal)
-            alert.topButton.setImage(ImageManager.imageForName("popup_market_highlighted"), forState: .Highlighted)
+            alert.topButton.setImage(ImageManager.image(forName: "popup_market"), for: UIControlState())
+            alert.topButton.setImage(ImageManager.image(forName: "popup_market_highlighted"), for: .highlighted)
             
-            alert.bottomButton.setImage(ImageManager.imageForName("popup_close"), forState: .Normal)
-            alert.bottomButton.setImage(ImageManager.imageForName("popup_close_highlighted"), forState: .Highlighted)
+            alert.bottomButton.setImage(ImageManager.image(forName: "popup_close"), for: UIControlState())
+            alert.bottomButton.setImage(ImageManager.image(forName: "popup_close_highlighted"), for: .highlighted)
             
-            let stickerImage = UIImageView(image: ImageManager.imageForName("popup_daily_reward"))
+            let stickerImage = UIImageView(image: ImageManager.image(forName: "popup_daily_reward"))
             alert.addSubview(stickerImage)
-            alert.bringSubviewToFront(stickerImage)
+            alert.bringSubview(toFront: stickerImage)
             alert.frame = CGRect(x: 0, y: 0, width: currentViewController!.view.frame.width, height: currentViewController!.view.frame.height)
             alert.setNeedsLayout()
             alert.layoutIfNeeded()
             let stickerImageDimension = alert.backgroundButton.frame.width / 6
             stickerImage.frame = CGRect(x: alert.backgroundButton.frame.origin.x + alert.backgroundButton.frame.width - stickerImageDimension * 0.8, y: alert.backgroundButton.frame.origin.y - stickerImageDimension * 0.2, width: stickerImageDimension, height: stickerImageDimension)
             
-            currentViewController!.mainController.presentAlert(alert, topButtonAction: {
-                MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
-                currentViewController!.mainController.setViewController(MarketController.ID)
+            currentViewController!.mainController.presentAlert(alert: alert, topButtonAction: {
+                MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
+                currentViewController!.mainController.setViewController(id: MarketController.ID)
                 }, bottomButtonAction: {
-                    MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
+                    MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
             })
         }
     }
     
     /** Recursive helper function that gets the current `ViewController`, if any. */
-    private func getCurrentViewController(base: UIViewController? = UIApplication.sharedApplication().keyWindow?.rootViewController) -> UIViewController? {
+    fileprivate func getCurrentViewController(base: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
         if let nav = base as? UINavigationController {
-            return getCurrentViewController(nav.visibleViewController)
+            return getCurrentViewController(base: nav.visibleViewController)
         }
         if let tab = base as? UITabBarController {
             if let selected = tab.selectedViewController {
-                return getCurrentViewController(selected)
+                return getCurrentViewController(base: selected)
             }
         }
         if let presented = base?.presentedViewController {
-            return getCurrentViewController(presented)
+            return getCurrentViewController(base: presented)
         }
         
         return base

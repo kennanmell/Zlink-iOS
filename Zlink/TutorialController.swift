@@ -21,7 +21,7 @@ class TutorialController: UIPageViewController, UIPageViewControllerDataSource, 
     static let boardLength = 6
     
     // MARK: Properties
-    private(set) var orderedViewControllers = Array<UIViewController>()
+    fileprivate(set) var orderedViewControllers = Array<UIViewController>()
     
     var applicationIsActive = true {
         didSet {
@@ -39,16 +39,16 @@ class TutorialController: UIPageViewController, UIPageViewControllerDataSource, 
         }
     }
     
-    private var pageControl = UIPageControl()
+    fileprivate var pageControl = UIPageControl()
     
-    override func prefersStatusBarHidden() -> Bool {
+    override var prefersStatusBarHidden : Bool {
         return true
     }
     
     // MARK: Initialization
     
     required init?(coder: NSCoder) {
-        super.init(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
         
         self.automaticallyAdjustsScrollViewInsets = false
 
@@ -59,7 +59,7 @@ class TutorialController: UIPageViewController, UIPageViewControllerDataSource, 
         orderedViewControllers.append(TutorialScene5Controller(coder: coder)!)
         
         pageControl.numberOfPages = orderedViewControllers.count
-        pageControl.userInteractionEnabled = false
+        pageControl.isUserInteractionEnabled = false
         pageControl.pageIndicatorTintColor = UIColor(red: 176.0 / 255.0, green: 176.0 / 255.0, blue: 176.0 / 255.0, alpha: 1.0)
         pageControl.currentPageIndicatorTintColor = UIColor(red: 64.0 / 255.0, green: 64.0 / 255.0, blue: 64.0 / 255.0, alpha: 1.0)
     }
@@ -75,27 +75,27 @@ class TutorialController: UIPageViewController, UIPageViewControllerDataSource, 
         
         ((orderedViewControllers[4] as! TutorialScene5Controller).view as! TutorialScene5View).playButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(TutorialController.playClicked)))
         
-        setViewControllers([orderedViewControllers[0]], direction: .Forward, animated: true, completion: nil)
+        setViewControllers([orderedViewControllers[0]], direction: .forward, animated: true, completion: nil)
         
         self.view.addSubview(pageControl)
         pageControl.frame = CGRect(x: self.view.frame.width / 2 - pageControl.frame.width / 2, y: self.view.frame.height - self.view.frame.height / 20, width: pageControl.frame.width, height: pageControl.frame.height)
-        self.view.bringSubviewToFront(pageControl)
+        self.view.bringSubview(toFront: pageControl)
     }
     
     // MARK: Play Button Delegate
     
     /** Called when the user clicks the play button. */
     func playClicked() {
-        MediaPlayer.playMP3Sound(MediaPlayer.buttonPressSoundLocation)
-        mainController.setViewController(PlayController.ID)
+        MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.buttonPressSoundLocation)
+        mainController.setViewController(id: PlayController.ID)
     }
 
     
     // MARK: UIPageViewControllerDataSource
     
-    func pageViewController(pageViewController: UIPageViewController,
-        viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
-            guard let viewControllerIndex = orderedViewControllers.indexOf(viewController) else {
+    func pageViewController(_ pageViewController: UIPageViewController,
+        viewControllerBefore viewController: UIViewController) -> UIViewController? {
+            guard let viewControllerIndex = orderedViewControllers.index(of: viewController) else {
                 return nil
             }
             
@@ -112,9 +112,9 @@ class TutorialController: UIPageViewController, UIPageViewControllerDataSource, 
             return orderedViewControllers[previousIndex]
     }
     
-    func pageViewController(pageViewController: UIPageViewController,
-        viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
-            guard let viewControllerIndex = orderedViewControllers.indexOf(viewController) else {
+    func pageViewController(_ pageViewController: UIPageViewController,
+        viewControllerAfter viewController: UIViewController) -> UIViewController? {
+            guard let viewControllerIndex = orderedViewControllers.index(of: viewController) else {
                 return nil
             }
             
@@ -135,12 +135,12 @@ class TutorialController: UIPageViewController, UIPageViewControllerDataSource, 
     
     // MARK: UIPageViewControllerDelegate
     
-    func pageViewController(pageViewController: UIPageViewController,
+    func pageViewController(_ pageViewController: UIPageViewController,
         didFinishAnimating finished: Bool,
         previousViewControllers: [UIViewController],
         transitionCompleted completed: Bool) {
             if let firstViewController = viewControllers?.first,
-                let index = orderedViewControllers.indexOf(firstViewController) {
+                let index = orderedViewControllers.index(of: firstViewController) {
                     pageControl.currentPage = index
             }
     }
@@ -152,17 +152,17 @@ class TutorialController: UIPageViewController, UIPageViewControllerDataSource, 
 
 private class TutorialSceneControllerBase: UIViewController {
     
-    private let standardMoveDuration = BoardController.moveDuration
+    fileprivate let standardMoveDuration = BoardController.moveDuration
     
-    private var currentFingerLocation = 0
+    fileprivate var currentFingerLocation = 0
     
-    private var board: Board!
+    fileprivate var board: Board!
     
-    private var instructions = Array<Instruction>()
+    fileprivate var instructions = Array<Instruction>()
     
-    private var shouldRunNextInstruction = true
+    fileprivate var shouldRunNextInstruction = true
     
-    private var runningInstruction = false
+    fileprivate var runningInstruction = false
     
     var applicationIsActive = true {
         didSet {
@@ -180,23 +180,23 @@ private class TutorialSceneControllerBase: UIViewController {
         }
     }
     
-    private var demoActive: Bool {
+    fileprivate var demoActive: Bool {
         return shouldRunNextInstruction && applicationIsActive && !menuIsOpen
     }
     
-    private func fillInstructions() {
+    fileprivate func fillInstructions() {
         instructions = Array<Instruction>()
         
         let additionalInstructions = customInstructions()
         if additionalInstructions != nil {
-            instructions.appendContentsOf(additionalInstructions!)
+            instructions.append(contentsOf: additionalInstructions!)
         }
     }
     
     func initialBoard() -> Board {
         let result = Board(rowLength: TutorialController.boardLength)
         for i in 0..<result.totalTiles {
-            result[i] = .Empty
+            result[i] = .empty
         }
         return result
     }
@@ -218,31 +218,31 @@ private class TutorialSceneControllerBase: UIViewController {
         return nil
     }
     
-    private func runInstruction() {
+    fileprivate func runInstruction() {
         if !instructions.isEmpty && !runningInstruction {
             runningInstruction = true
             let instruction = instructions.removeFirst()
             
             switch instruction.type {
-            case .Wait:
-                let time = dispatch_time(DISPATCH_TIME_NOW, Int64(instruction.duration * Double(NSEC_PER_SEC)))
-                dispatch_after(time, dispatch_get_main_queue(), {
+            case .wait:
+                let time = DispatchTime.now() + Double(Int64(instruction.duration * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+                DispatchQueue.main.asyncAfter(deadline: time, execute: {
                     self.afterRunInstruction()
                 })
-            case .MoveTile:
-                if !board.moveTile(instruction.location, inDirection: instruction.direction) {
-                    MediaPlayer.playMP3Sound(MediaPlayer.badMoveSoundLocation)
-                    (board.boardListener as! BoardController).animateBadMove(instruction.location)
+            case .moveTile:
+                if !board.moveTile(location: instruction.location, inDirection: instruction.direction) {
+                    MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.badMoveSoundLocation)
+                    (board.boardListener as! BoardController).animateBadMove(location: instruction.location)
                 } else {
-                    MediaPlayer.playMP3Sound(MediaPlayer.moveSoundLocation)
+                    MediaPlayer.playMP3Sound(soundLocation: MediaPlayer.moveSoundLocation)
                 }
                 afterRunInstruction()
-            case .MoveFinger:
+            case .moveFinger:
                 let location = instruction.location
                 let finger = (self.view as! TutorialSceneView).fingerImage
                 let newFrame = fingerFrameForLocation(location)
                 let duration: Double
-                if instruction.direction == .Up {
+                if instruction.direction == .up {
                     // Want fast duration.
                     duration = standardMoveDuration * pythagoreanDistance(fromLocation: currentFingerLocation, toLocation: location)
                 } else {
@@ -250,32 +250,32 @@ private class TutorialSceneControllerBase: UIViewController {
                     duration = standardMoveDuration * pythagoreanDistance(fromLocation: currentFingerLocation, toLocation: location) * 2
                 }
                 currentFingerLocation = location
-                UIView.animateWithDuration(duration, delay: 0, options: .CurveEaseInOut, animations: {
+                UIView.animate(withDuration: duration, delay: 0, options: UIViewAnimationOptions(), animations: {
                     finger.frame = newFrame
                     }, completion: { _ in
                         finger.frame = newFrame
                         self.afterRunInstruction()
                 })
-            case .CheckConnections:
-                board.removeLinks()
+            case .checkConnections:
+                _ = board.removeLinks()
                 afterRunInstruction()
-            case .StepTime:
+            case .stepTime:
                 board.stepTime()
                 afterRunInstruction()
-            case .BounceFinger:
+            case .bounceFinger:
                 let finger = (self.view as! TutorialSceneView).fingerImage
                 let boardView = (self.view as! TutorialSceneView).boardView
-                UIView.animateWithDuration(0.1, delay: 0, options: .CurveEaseInOut, animations: {
+                UIView.animate(withDuration: 0.1, delay: 0, options: UIViewAnimationOptions(), animations: {
                     finger.frame.origin.y -= boardView.tileButtonArray[0].frame.width / 4
                     }, completion: { _ in
-                        UIView.animateWithDuration(0.1, delay: 0, options: .CurveEaseInOut, animations: {
+                        UIView.animate(withDuration: 0.1, delay: 0, options: UIViewAnimationOptions(), animations: {
                             finger.frame.origin.y += boardView.tileButtonArray[0].frame.width / 4
                             }, completion: { _ in
                                 self.afterRunInstruction()
                         })
                 })
-            case .ShowBottomText:
-                UIView.animateWithDuration(1.0, animations: {
+            case .showBottomText:
+                UIView.animate(withDuration: 1.0, animations: {
                     (self.view as! TutorialSceneView).bottomTextLabel.alpha = 1.0
                 })
                 afterRunInstruction()
@@ -283,12 +283,12 @@ private class TutorialSceneControllerBase: UIViewController {
         }
     }
     
-    private func afterRunInstruction() {
+    fileprivate func afterRunInstruction() {
         runningInstruction = false
         if instructions.isEmpty {
             let startBoard = initialBoard()
             for i in 0..<board.totalTiles {
-                if startBoard[i] != .Broken {
+                if startBoard[i] != .broken {
                     board[i] = startBoard[i]
                 }
             }
@@ -305,13 +305,13 @@ private class TutorialSceneControllerBase: UIViewController {
         self.view = sceneView
         self.board = initialBoard()
         if !fingerVisible() {
-            sceneView.fingerImage.hidden = true
+            sceneView.fingerImage.isHidden = true
         }
         sceneView.topTextLabel.text = topText()
         sceneView.bottomTextLabel.text = bottomText()
         
         for i in 0..<board.totalTiles {
-            sceneView.boardView.tileButtonArray[i].setImage(ImageManager.imageForTile(board[i]), forState: .Normal)
+            sceneView.boardView.tileButtonArray[i].setImage(ImageManager.image(forTile: board[i]), for: UIControlState())
         }
         
         let startBoard = initialBoard()
@@ -322,7 +322,7 @@ private class TutorialSceneControllerBase: UIViewController {
         fillInstructions()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         let boardView = (self.view as! TutorialSceneView).boardView
@@ -338,20 +338,20 @@ private class TutorialSceneControllerBase: UIViewController {
         shouldRunNextInstruction = true
     }
         
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        let time = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
-        dispatch_after(time, dispatch_get_main_queue(), {
+        let time = DispatchTime.now() + Double(Int64(0.1 * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        DispatchQueue.main.asyncAfter(deadline: time, execute: {
             self.runInstruction()
         })
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         shouldRunNextInstruction = false
     }
     
-    private func fingerFrameForLocation(location: Int) -> CGRect {
+    fileprivate func fingerFrameForLocation(_ location: Int) -> CGRect {
         let board = (self.view as! TutorialSceneView).boardView
         let finger = (self.view as! TutorialSceneView).fingerImage
         
@@ -359,7 +359,7 @@ private class TutorialSceneControllerBase: UIViewController {
         return CGRect(x: board.frame.origin.x + tileViewFrame.origin.x + tileViewFrame.width / 2 - finger.frame.width / 2, y: board.frame.origin.y + tileViewFrame.origin.y + tileViewFrame.height / 2, width: finger.frame.width, height: finger.frame.height)
     }
     
-    private func pythagoreanDistance(fromLocation fromLocation: Int, toLocation: Int) -> Double {
+    fileprivate func pythagoreanDistance(fromLocation: Int, toLocation: Int) -> Double {
         let xDistance = (toLocation % TutorialController.boardLength) - (fromLocation % TutorialController.boardLength)
         let yDistance = (toLocation / TutorialController.boardLength) - (fromLocation / TutorialController.boardLength)
         
@@ -371,24 +371,24 @@ private class TutorialSceneControllerBase: UIViewController {
 // MARK: InstructionType
 
 private enum InstructionType {
-    case Wait, MoveFinger, MoveTile, CheckConnections, StepTime, BounceFinger, ShowBottomText
+    case wait, moveFinger, moveTile, checkConnections, stepTime, bounceFinger, showBottomText
 }
 
 
 // MARK: Instruction
 private struct Instruction {
     // Initialized to filler values so the initializers don't have to repetitively initialize unneeded values.
-    private let type: InstructionType
-    private var duration: Double = 0.0
-    private var location: Int = 0
-    private var direction: Direction = .Up
-    private var newText = ""
+    fileprivate let type: InstructionType
+    fileprivate var duration: Double = 0.0
+    fileprivate var location: Int = 0
+    fileprivate var direction: Direction = .up
+    fileprivate var newText = ""
     
     init(wait: Double) {
         if wait < 0 {
             fatalError("Initialized with negative wait time.")
         }
-        self.type = .Wait
+        self.type = .wait
         self.duration = wait
     }
     
@@ -396,13 +396,13 @@ private struct Instruction {
         if location < 0 || location >= TutorialController.boardLength * TutorialController.boardLength {
             fatalError("Initialized with invalid location.")
         }
-        self.type = .MoveFinger
+        self.type = .moveFinger
         self.location = location
         // Uses `direction` as a boolean value to avoid having to store another property in the struct.
         if fastDuration {
-            direction = .Up
+            direction = .up
         } else {
-            direction = .Down
+            direction = .down
         }
     }
     
@@ -410,21 +410,21 @@ private struct Instruction {
         if location < 0 || location >= TutorialController.boardLength * TutorialController.boardLength {
             fatalError("Initialized with invalid location.")
         }
-        self.type = .MoveTile
+        self.type = .moveTile
         self.location = location
         self.direction = direction
     }
     
     init(checkBoardConnections: Bool = true) {
-        self.type = .CheckConnections
+        self.type = .checkConnections
     }
     
     init(stepBoardTime: Bool = true) {
-        self.type = .StepTime
+        self.type = .stepTime
     }
         
     init(fadeinBottomText: Bool = true) {
-        self.type = .ShowBottomText
+        self.type = .showBottomText
     }
 }
 
@@ -452,7 +452,7 @@ private class TutorialScene2Controller: TutorialSceneControllerBase {
         
         result.append(Instruction(moveFingerToLocation: 26, fastDuration: false))
         result.append(Instruction(wait: 0.25))
-        result.append(Instruction(moveTileAtLocation: 26, inDirection: .Up))
+        result.append(Instruction(moveTileAtLocation: 26, inDirection: .up))
         result.append(Instruction(moveFingerToLocation: 20, fastDuration: true))
         
         result.append(Instruction(fadeinBottomText: true))
@@ -460,13 +460,13 @@ private class TutorialScene2Controller: TutorialSceneControllerBase {
         result.append(Instruction(wait: 0.5))
         result.append(Instruction(moveFingerToLocation: 17, fastDuration: false))
         result.append(Instruction(wait: 0.25))
-        result.append(Instruction(moveTileAtLocation: 17, inDirection: .Left))
+        result.append(Instruction(moveTileAtLocation: 17, inDirection: .left))
         result.append(Instruction(moveFingerToLocation: 16, fastDuration: true))
         
         result.append(Instruction(wait: 0.5))
         result.append(Instruction(moveFingerToLocation: 9, fastDuration: false))
         result.append(Instruction(wait: 0.25))
-        result.append(Instruction(moveTileAtLocation: 9, inDirection: .Right))
+        result.append(Instruction(moveTileAtLocation: 9, inDirection: .right))
         result.append(Instruction(moveFingerToLocation: 10, fastDuration: true))
         
         result.append(Instruction(checkBoardConnections: true))
@@ -481,13 +481,13 @@ private class TutorialScene2Controller: TutorialSceneControllerBase {
     override func initialBoard() -> Board {
         let result = Board(rowLength: TutorialController.boardLength)
         for i in 0..<result.totalTiles {
-            result[i] = .Empty
+            result[i] = .empty
         }
-        result[19] = .Zlink1
-        result[4] = .Zlink2
-        result[26] = .Number3
-        result[17] = .Number2
-        result[9] = .Number1
+        result[19] = .zlink1
+        result[4] = .zlink2
+        result[26] = .number3
+        result[17] = .number2
+        result[9] = .number1
         return result
     }
     
@@ -522,13 +522,13 @@ private class TutorialScene3Controller: TutorialSceneControllerBase {
         result.append(Instruction(wait: 0.75))
         result.append(Instruction(moveFingerToLocation: 11, fastDuration: false))
         result.append(Instruction(wait: 0.25))
-        result.append(Instruction(moveTileAtLocation: 11, inDirection: .Left))
+        result.append(Instruction(moveTileAtLocation: 11, inDirection: .left))
         result.append(Instruction(moveFingerToLocation: 10, fastDuration: true))
         
         result.append(Instruction(wait: 0.5))
         result.append(Instruction(moveFingerToLocation: 2, fastDuration: false))
         result.append(Instruction(wait: 0.25))
-        result.append(Instruction(moveTileAtLocation: 2, inDirection: .Down))
+        result.append(Instruction(moveTileAtLocation: 2, inDirection: .down))
         result.append(Instruction(moveFingerToLocation: 8, fastDuration: true))
         
         result.append(Instruction(checkBoardConnections: true))
@@ -542,20 +542,20 @@ private class TutorialScene3Controller: TutorialSceneControllerBase {
     override func initialBoard() -> Board {
         let result = Board(rowLength: TutorialController.boardLength)
         for i in 0..<result.totalTiles {
-            result[i] = .Empty
+            result[i] = .empty
         }
         
-        result[14] = .Full5
-        result[15] = .Full5
-        result[20] = .Full5
-        result[21] = .Full5
+        result[14] = .full5
+        result[15] = .full5
+        result[20] = .full5
+        result[21] = .full5
         
-        result[7] = .Zlink1
-        result[28] = .Zlink3
-        result[2] = .Number1
-        result[11] = .Number2
-        result[16] = .Number1
-        result[22] = .Number3
+        result[7] = .zlink1
+        result[28] = .zlink3
+        result[2] = .number1
+        result[11] = .number2
+        result[16] = .number1
+        result[22] = .number3
         
         return result
     }
@@ -583,31 +583,31 @@ private class TutorialScene4Controller: TutorialSceneControllerBase {
         result.append(Instruction(fadeinBottomText: true))
         
         result.append(Instruction(wait: 0.25))
-        result.append(Instruction(moveTileAtLocation: 13, inDirection: .Right))
+        result.append(Instruction(moveTileAtLocation: 13, inDirection: .right))
         result.append(Instruction(moveFingerToLocation: 14, fastDuration: true))
         
         result.append(Instruction(wait: 0.5))
         result.append(Instruction(moveFingerToLocation: 13, fastDuration: false))
         result.append(Instruction(wait: 0.25))
-        result.append(Instruction(moveTileAtLocation: 13, inDirection: .Down))
+        result.append(Instruction(moveTileAtLocation: 13, inDirection: .down))
         result.append(Instruction(moveFingerToLocation: 19, fastDuration: true))
         
         result.append(Instruction(wait: 0.5))
         result.append(Instruction(moveFingerToLocation: 13, fastDuration: false))
         result.append(Instruction(wait: 0.25))
-        result.append(Instruction(moveTileAtLocation: 13, inDirection: .Up))
+        result.append(Instruction(moveTileAtLocation: 13, inDirection: .up))
         result.append(Instruction(moveFingerToLocation: 7, fastDuration: true))
         
         result.append(Instruction(wait: 0.75))
         result.append(Instruction(moveFingerToLocation: 1, fastDuration: false))
         result.append(Instruction(wait: 0.25))
-        result.append(Instruction(moveTileAtLocation: 1, inDirection: .Right))
+        result.append(Instruction(moveTileAtLocation: 1, inDirection: .right))
         result.append(Instruction(moveFingerToLocation: 2, fastDuration: true))
         
         result.append(Instruction(wait: 0.5))
         result.append(Instruction(moveFingerToLocation: 13, fastDuration: false))
         result.append(Instruction(wait: 0.25))
-        result.append(Instruction(moveTileAtLocation: 13, inDirection: .Up))
+        result.append(Instruction(moveTileAtLocation: 13, inDirection: .up))
         result.append(Instruction(moveFingerToLocation: 7, fastDuration: true))
         
         result.append(Instruction(checkBoardConnections: true))
@@ -621,15 +621,15 @@ private class TutorialScene4Controller: TutorialSceneControllerBase {
     override func initialBoard() -> Board {
         let result = Board(rowLength: TutorialController.boardLength)
         for i in 0..<result.totalTiles {
-            result[i] = .Empty
+            result[i] = .empty
         }
         
-        result[1] = .Number3
-        result[5] = .Zlink1
-        result[0] = .Zlink3
-        result[13] = .Number2
-        result[15] = .Zlink2
-        result[19] = .Broken
+        result[1] = .number3
+        result[5] = .zlink1
+        result[0] = .zlink3
+        result[13] = .number2
+        result[15] = .zlink2
+        result[19] = .broken
         return result
     }
     
@@ -653,11 +653,11 @@ private class TutorialScene5Controller: UIViewController {
         self.view = sceneController
         
         if !SavedData.stats.isTrackingGame {
-            sceneController.playButton.setImage(ImageManager.imageForName("new_button"), forState: .Normal)
-            sceneController.playButton.setImage(ImageManager.imageForName("new_button_highlighted"), forState: .Highlighted)
+            sceneController.playButton.setImage(ImageManager.image(forName: "new_button"), for: UIControlState())
+            sceneController.playButton.setImage(ImageManager.image(forName: "new_button_highlighted"), for: .highlighted)
         } else {
-            sceneController.playButton.setImage(ImageManager.imageForName("play_button"), forState: .Normal)
-            sceneController.playButton.setImage(ImageManager.imageForName("play_button_highlighted"), forState: .Highlighted)
+            sceneController.playButton.setImage(ImageManager.image(forName: "play_button"), for: UIControlState())
+            sceneController.playButton.setImage(ImageManager.image(forName: "play_button_highlighted"), for: .highlighted)
         }
     }
     
