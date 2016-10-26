@@ -492,30 +492,39 @@ class BoardFiller: NSObject, NSCoding {
         let zlinks = chosen[0].characters.split{$0 == " "}.map(String.init)
         for j in 0..<zlinks.count {
             let location = Int(zlinks[j])!
-            board[location] = generateZlinkType()
-            refillListener?.tileRefilled(location: location, after: board[location])
+            if location != -1 {
+                board[location] = generateZlinkType()
+                refillListener?.tileRefilled(location: location, after: board[location])
+            }
         }
         
         let ones = chosen[1].characters.split{$0 == " "}.map(String.init)
         
         for j in 0..<ones.count {
             let location = Int(ones[j])!
-            board[location] = .number1
-            refillListener?.tileRefilled(location: location, after: board[location])
+            if location != -1 {
+                board[location] = .number1
+                refillListener?.tileRefilled(location: location, after: board[location])
+            }
         }
         let twos = chosen[2].characters.split{$0 == " "}.map(String.init)
         
         for j in 0..<twos.count {
             let location = Int(twos[j])!
-            board[location] = .number2
-            refillListener?.tileRefilled(location: location, after: board[location])
+            if location != -1 {
+                board[location] = .number2
+                refillListener?.tileRefilled(location: location, after: board[location])
+            }
         }
+        
         let threes = chosen[3].characters.split{$0 == " "}.map(String.init)
         
         for j in 0..<threes.count {
             let location = Int(threes[j])!
-            board[location] = .number3
-            refillListener?.tileRefilled(location: location, after: board[location])
+            if location != -1 {
+                board[location] = .number3
+                refillListener?.tileRefilled(location: location, after: board[location])
+            }
         }
         
         let location = addNumber(notify: false)

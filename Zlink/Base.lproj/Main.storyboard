@@ -102,7 +102,7 @@
             <objects>
                 <navigationController id="xKr-44-F3h" userLabel="Menu" customClass="MainController" customModule="Zlink" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Item" id="qnV-qS-iv7"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="j84-05-NcZ" customClass="TopBarView" customModule="Zlink" customModuleProvider="target">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="j84-05-NcZ">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

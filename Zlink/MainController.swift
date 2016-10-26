@@ -96,11 +96,7 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
     /** A weak reference to the side menu view. */
     fileprivate weak var menuView: MenuView!
     
-    /** `self.navigationBar` cast to `TopBarView`. */
-    fileprivate var topBarView: TopBarView {
-        // This cast will always succeed if the Storyboard is set up correctly.
-        return navigationBar as! TopBarView
-    }
+    fileprivate var topBarView: TopBarView = TopBarView()
     
     /** The `AlertView` currently displayed by this `MainController`, or `nil` if no `AlertView` is currently displayed. */
     fileprivate var displayedAlert: AlertView?
@@ -121,8 +117,11 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Adjust `navigationBar` frame.
-        self.navigationBar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: topBarView.menuButton.frame.height)
+        self.navigationBar.isHidden = true
+        
+        // Adjust `topBarView` frame.
+        self.view.addSubview(topBarView)
+        self.topBarView.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: topBarView.menuButton.frame.height)
         
         // Set up side menu.
         let menuView = MenuView(superViewFrame: self.view.frame)
@@ -131,7 +130,7 @@ class MainController: UINavigationController, GKGameCenterControllerDelegate {
         view.addSubview(menuView)
         
         // Make sure top bar appears in front of side menu.
-        view.bringSubview(toFront: navigationBar)
+        view.bringSubview(toFront: topBarView)
         
         // Prepare top bar gesture recognizers.
         topBarView.menuButton.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(MainController.menuTapped)))

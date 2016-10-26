@@ -15,12 +15,14 @@ import UIKit
  
  - seealso: `MainController`
  */
-class TopBarView: UINavigationBar {
+class TopBarView: UIView {
     
     // MARK: Properties
     
-    /** The height of the top bar. Updated by each instance of `TopBarView` each time its subviews are laid out. */
-    fileprivate(set) static var topBarHeight: CGFloat!
+    /** The height of the visible top bar. */
+    static var topBarHeight: CGFloat {
+        return UIScreen.main.bounds.width / (2.5 / 0.324)
+    }
         
     /** Displays the Zlink logo. */
     let backgroundImage = UIImageView(image: ImageManager.image(forName: "topbar_background"))
@@ -51,11 +53,6 @@ class TopBarView: UINavigationBar {
     
     /** Shared initializer. */
     fileprivate func initialize() {
-        for subview in subviews{
-            // To get rid of that weird white background color.
-            subview.isHidden = true
-        }
-        
         menuButton.setImage(ImageManager.image(forName: "topbar_menu"), for: UIControlState())
         menuButton.setImage(ImageManager.image(forName: "topbar_menu_selected"), for: .highlighted)
         
@@ -95,9 +92,6 @@ class TopBarView: UINavigationBar {
         titleLabel.frame = backgroundImage.frame
         titleLabel.font = UIFont(name: "Dosis-Semibold", size: backgroundImage.frame.height / 1.25)
 
-                
-        // Report height.
-        TopBarView.topBarHeight = backgroundImage.frame.height
         self.frame = CGRect(x: self.frame.origin.x, y: self.frame.origin.y, width: self.frame.width, height: TopBarView.topBarHeight)
     }
     
