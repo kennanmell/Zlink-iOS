@@ -84,7 +84,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
         // Prepare Chartboost ads.
         Chartboost.start(withAppId: "56e3c2882fdf346cf3cd353c", appSignature: "16a421d64ada386cff627f98a68171309e276d96", delegate: nil)
-        
+                
         return true
     }
 
