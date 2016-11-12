@@ -146,7 +146,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             let alert = AlertView()
             alert.titleLabel.text = "Daily Reward"
-            alert.messageLabel.text =  "You earned one free Power-Up for playing Zlink today!\n\nVisit the Market for more FREE Power-Ups?"
+            alert.messageLabel.text =  "You earned one free Power-Up for playing Zlink today!\n\nVisit the Market for more FREE Power-Ups!"
             alert.aspectRatio = 1 / 1.12
             
             alert.topButton.setImage(ImageManager.image(forName: "popup_market"), for: UIControlState())

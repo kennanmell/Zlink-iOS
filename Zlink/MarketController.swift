@@ -55,11 +55,13 @@ class MarketController: UIViewController, SKProductsRequestDelegate, SKPaymentTr
                 default: fatalError("MarketView: Invalid Pager Page")
                 }
                 
+                newImage.frame = marketView.pagerView.subviews[0].frame
+                
                 UIView.transition(from: marketView.pagerView.subviews[0], to: newImage, duration: 1.0, options: UIViewAnimationOptions.transitionCrossDissolve, completion: nil)
                 
                 if currentPagerPage == 0 {
                     marketView.pagerView.addSubview(marketView.powerupsInventoryLabel)
-                    marketView.powerupsInventoryLabel.frame = CGRect(x: 0, y: -marketView.pagerView.frame.height * 0.1, width: marketView.pagerView.frame.width, height: marketView.pagerView.frame.height)
+                    marketView.powerupsInventoryLabel.frame = CGRect(x: 0, y: marketView.pagerView.frame.height * 0.025, width: marketView.pagerView.frame.width, height: marketView.pagerView.frame.height)
                 } else {
                     marketView.powerupsInventoryLabel.removeFromSuperview()
                 }
